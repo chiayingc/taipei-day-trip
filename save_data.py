@@ -18,7 +18,7 @@ try:
                                                 host="localhost",
                                                 database="tpidaytrip",
                                                 user="root",
-                                                password="meowmeow"
+                                                password="********"
                                                 )
     connection_object=connection_pool.get_connection()
 
