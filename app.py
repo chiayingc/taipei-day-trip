@@ -73,9 +73,13 @@ def attractionsapi():
 
 		cursor.execute(sql,val)
 		pageData=cursor.fetchall()
-		print(pageData)
 		for i in range(len(pageData)):
 			pageData[i]=list(pageData[i])
+			pageData[i][9]=json.loads(pageData[i][9])
+		print(type(pageData))
+		print(pageData[0][9])
+		print(type(pageData[0][9]))
+		print(pageData[0][9][1])
 
 		sql="SELECT COUNT(*) FROM attractions"
 		cursor.execute(sql)
@@ -128,23 +132,25 @@ def attractionapi(id):
 
 		sql = "SELECT * FROM attractions WHERE id= %s"
 		cursor.execute(sql, (attId,))
-		attData=cursor.fetchall()
-		attData=list(attData[0])
+		attData=cursor.fetchone()
+		attData=list(attData)
 		attData[9]=json.loads(attData[9])
+		print(attData[9][0])
 
-		data={}
-		data["id"]=attId
-		data["name"]=attData[1]
-		data["category"]=attData[2]
-		data["description"]=attData[3]
-		data["address"]=attData[4]
-		data["transport"]=attData[5]
-		data['mrt']=attData[6]
-		data["lat"]=attData[7]
-		data["lng"]=attData[8]
-		data["images"]=attData[9]
+		result={}
+		result["data"]={}
+		result["data"]["id"]=attId
+		result["data"]["name"]=attData[1]
+		result["data"]["category"]=attData[2]
+		result["data"]["description"]=attData[3]
+		result["data"]["address"]=attData[4]
+		result["data"]["transport"]=attData[5]
+		result["data"]['mrt']=attData[6]
+		result["data"]["lat"]=attData[7]
+		result["data"]["lng"]=attData[8]
+		result["data"]["images"]=attData[9]
 
-		return jsonify(data),200
+		return jsonify(result),200
 	
 	except:
 		result={}
@@ -158,12 +164,12 @@ def categories():
 	try:
 		sql = "SELECT name FROM attractions"
 		cursor.execute(sql)
-		nameList=cursor.fetchall()
-		for i in range(len(nameList)):
-			nameList[i]=str(nameList[i][0])
+		catList=cursor.fetchall()
+		for i in range(len(catList)):
+			catList[i]=str(catList[i][0])
 
 		result={}
-		result["data"]=nameList
+		result["data"]=catList
 		return jsonify(result),200
 	
 	except:
