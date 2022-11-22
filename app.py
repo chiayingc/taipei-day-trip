@@ -76,10 +76,6 @@ def attractionsapi():
 		for i in range(len(pageData)):
 			pageData[i]=list(pageData[i])
 			pageData[i][9]=json.loads(pageData[i][9])
-		print(type(pageData))
-		print(pageData[0][9])
-		print(type(pageData[0][9]))
-		print(pageData[0][9][1])
 
 		sql="SELECT COUNT(*) FROM attractions"
 		cursor.execute(sql)
@@ -135,7 +131,6 @@ def attractionapi(id):
 		attData=cursor.fetchone()
 		attData=list(attData)
 		attData[9]=json.loads(attData[9])
-		print(attData[9][0])
 
 		result={}
 		result["data"]={}
@@ -162,7 +157,7 @@ def attractionapi(id):
 @app.route("/api/categories")
 def categories():
 	try:
-		sql = "SELECT name FROM attractions"
+		sql = "SELECT CAT FROM attractions"
 		cursor.execute(sql)
 		catList=cursor.fetchall()
 		for i in range(len(catList)):
