@@ -157,7 +157,7 @@ def attractionapi(id):
 @app.route("/api/categories")
 def categories():
 	try:
-		sql = "SELECT CAT FROM attractions"
+		sql = "SELECT DISTINCT CAT FROM attractions"
 		cursor.execute(sql)
 		catList=cursor.fetchall()
 		for i in range(len(catList)):
