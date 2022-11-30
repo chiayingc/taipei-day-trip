@@ -1,0 +1,239 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+*{
+    padding: 0;
+    margin: 0;
+    border: boder-box;
+    font-family: 'Noto Sans TC';
+}
+
+@media (max-width:1920px){
+    body{
+        width: 100%;
+        display: grid;
+        grid-template-columns: 100%;
+        justify-items: center;
+    }
+
+    body nav{
+        width: 100%;
+        height: 54px;
+        background-color: #fff;
+        display: grid;
+        justify-items: center;
+        position:fixed;
+        top: 0;
+        right: 0;
+        z-index: 1;
+    }
+
+    body nav .nav{
+        width: 1200px;
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        align-items: center;
+    }
+
+    body nav .nav ul{
+        display: grid;
+        grid-template-columns: repeat(2,100px);
+        font-size: 16px;
+        line-height: 13px;
+        color: #666666;
+        padding: 20px;
+        justify-self: end;
+        
+    }
+
+    li{
+        list-style-type: none;
+        justify-self: end;
+    }
+
+    .nav h2{
+        font-size: 30px;
+        line-height: 34px;
+        color: #448899;
+
+        font-weight: bolder;
+    }
+
+    header{
+        width: 100vw;
+        height: 250px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-image: url(/images/welcomeimage.png);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        position: relative;
+        top: 54px;
+       
+    }
+
+    .header{
+        width: 1170px;
+        padding: 15px;
+    }
+
+    .header h1{
+        margin-top: 10px;
+        font-weight: 700;
+        font-size: 28px;    
+        line-height: 32px;
+        align-items: center;
+        color: #F8F8F8;
+        text-shadow: 0px 0px 30px #AABBCC;
+    }
+
+    .header h4{
+        margin-top: 15px;
+        margin-bottom: 25px;
+        align-items: center;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        color: #F8F8F8;
+    }
+
+    .header > div{
+        width: 460px;
+        height: 46px;
+        border-radius: 5px;
+        background-color: #FFF;
+        display: flex;
+    }
+
+
+    .header div input{
+        width: 370px;
+        height: 16px;
+        margin: 15px;
+        justify-items: flex-start;
+        background-color: #FFF;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 13px;
+        color: #757575;
+        border: 0;
+    }
+
+    .header > div > div{
+        width: 60px;
+        height: 46px;
+        border-radius:0px 5px 5px 0px;
+        background-color: #448899;
+        display: flex;
+    }
+
+    .header > div > div > img{
+        width: 30px;
+        height: 30px;
+        margin-left: 15px;
+        margin-right: 15px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        justify-items: center;
+        align-items: center;
+    }
+
+    main{
+        width: 1200px;
+        margin-top: 50px;
+        margin-bottom: 55px;
+        position: relative;
+        top: 54px;
+    }
+
+    .container{
+        width: calc(100%-30px);
+        padding-left: 15px;
+        padding-right: 15px;
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: repeat(4,1fr);
+        column-gap: 30px;
+        row-gap: 30px;
+        justify-items: center;
+
+
+    }
+
+    .container div{
+        width: 270px;
+        height: 240px;
+        display: grid;
+        grid-template-rows: 5fr 1fr;
+
+    }
+
+    .container div img{
+        min-width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .container div h4{
+        height: 40px;
+        display: grid;
+        justify-items: center;
+        align-items: center;
+        background-color: lightcyan;
+        border-radius: 0 0 5px 5px;
+    }
+
+    footer{
+        margin-top: 55px;
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        width: 100%;
+        height: 104px;
+        background-color: #757575;
+    }
+
+    footer > p {
+
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        color: #FFFFFF;
+    }
+
+
+}
+
+@media (max-width:1200px){
+    header{
+        width: 100%;
+    }
+    body nav .nav,main{
+        width: 90%;
+    }
+
+    .header{
+        width: 87.4%;
+    }
+
+
+    .container{
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .container div{
+        width:100%;
+    }
+
+
+
+}
+
+@media (min-width:360px) and (max-width:600px){
+    .container{
+        grid-template-columns: 1fr;
+    }
+
+}

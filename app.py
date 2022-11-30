@@ -6,30 +6,20 @@ from mysql.connector import pooling
 import json,re
 
 
-try:
-    connection_pool=pooling.MySQLConnectionPool(pool_name="pynative_pool",
-                                                pool_size=5,
-                                                pool_reset_session=True,
-                                                host="localhost",
-                                                database="tpidaytrip",
-                                                user="root",
-                                                password="meowmeow"
-                                                )
-    connection_object=connection_pool.get_connection()
 
-    if connection_object.is_connected():
-        db_Info=connection_object.get_server_info()
-        print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+connection_pool=pooling.MySQLConnectionPool(pool_name="pynative_pool",
+											pool_size=5,
+											pool_reset_session=True,
+											host="localhost",
+											database="tpidaytrip",
+											user="root",
+											password="meowmeow"
+											)
 
-    cursor=connection_object.cursor()
-    cursor.execute("select database();")
-    record=cursor.fetchone()
-    print("Your connected to-",record)
 
-except Error as e:
-    print("Error while connecting to MySQL using Connection pool",e)
-
-app=Flask(__name__)
+app=Flask(__name__,
+    static_folder="static",
+    static_url_path="/")
 app.config["JSON_AS_ASCII"]=False
 app.config["TEMPLATES_AUTO_RELOAD"]=True
 app.config["JSON_SORT_KEYS"] = False
@@ -55,6 +45,20 @@ def thankyou():
 @app.route("/api/attractions")
 def attractionsapi():
 	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+
 		page=request.args.get("page","0")
 		page=int(page)
 		count=page*12
@@ -108,12 +112,31 @@ def attractionsapi():
 		result["error"]=True
 		result["message"]="伺服器內部錯誤"
 		return jsonify(result),500
+	
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
 
 
 
 @app.route("/api/attraction/<id>")
 def attractionapi(id):
 	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+
 		attId=int(id)
 		sql = "SELECT count(*) FROM attractions"
 		cursor.execute(sql)
@@ -152,11 +175,30 @@ def attractionapi(id):
 		result["error"]=True
 		result["message"]="伺服器內部錯誤"
 		return jsonify(result),500
+	
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
 
 
 @app.route("/api/categories")
 def categories():
 	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+
 		sql = "SELECT DISTINCT CAT FROM attractions"
 		cursor.execute(sql)
 		catList=cursor.fetchall()
@@ -172,6 +214,11 @@ def categories():
 		result["error"]=True
 		result["message"]="伺服器內部錯誤"
 		return jsonify(result),500
+	
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
 
 
 app.run(host="0.0.0.0",port=3000)
