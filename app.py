@@ -25,6 +25,10 @@ app.config["TEMPLATES_AUTO_RELOAD"]=True
 app.config["JSON_SORT_KEYS"] = False
 
 # Pages
+@app.route("/test")
+def test():
+	return render_template("test.html")
+	
 @app.route("/")
 def index():
 	return render_template("index.html")

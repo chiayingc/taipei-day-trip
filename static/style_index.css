@@ -24,7 +24,7 @@
         position:fixed;
         top: 0;
         right: 0;
-        z-index: 1;
+        z-index: 3;
     }
 
     body nav .nav{
@@ -38,7 +38,7 @@
         display: grid;
         grid-template-columns: repeat(2,100px);
         font-size: 16px;
-        line-height: 13px;
+        line-height: 20px;
         color: #666666;
         padding: 20px;
         justify-self: end;
@@ -59,7 +59,7 @@
     }
 
     header{
-        width: 100vw;
+        width: 100%;
         height: 250px;
         background-repeat: no-repeat;
         background-size: cover;
@@ -76,6 +76,7 @@
     .header{
         width: 1170px;
         padding: 15px;
+        height: 148px;
     }
 
     .header h1{
@@ -86,6 +87,8 @@
         align-items: center;
         color: #F8F8F8;
         text-shadow: 0px 0px 30px #AABBCC;
+        position: relative;
+        top: 0px;
     }
 
     .header h4{
@@ -96,36 +99,85 @@
         font-size: 16px;
         line-height: 20px;
         color: #F8F8F8;
+        position: relative;
+        top: 0px;
     }
 
-    .header > div{
-        width: 460px;
+    #search{
+        width: 450px;
         height: 46px;
         border-radius: 5px;
         background-color: #FFF;
         display: flex;
+        align-items: center;
+        position: relative;
+        top: 0px;
     }
 
-
-    .header div input{
-        width: 370px;
-        height: 16px;
-        margin: 15px;
-        justify-items: flex-start;
-        background-color: #FFF;
-        font-weight: 700;
-        font-size: 16px;
-        line-height: 13px;
-        color: #757575;
-        border: 0;
-    }
-
-    .header > div > div{
+    #search > div{
         width: 60px;
         height: 46px;
         border-radius:0px 5px 5px 0px;
         background-color: #448899;
         display: flex;
+        position: relative;
+        top: 0px;
+        z-index: 2;
+    }
+
+    #search input{
+        width: 370px;
+        height: 16px;
+        margin: 10px;
+        justify-items: flex-start;
+        background-color: #FFF;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        color: #757575;
+        border: 0;
+        outline: none;
+        position: relative;
+        top: 0px;
+        z-index: 2;
+    }
+
+    .noCats{
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background-color: #fff;
+        opacity: 0;
+        position:absolute;
+        top: 0;
+    }
+    .noCats > div{
+        width: 100vh;
+        height: 100vh;
+        opacity: 0;
+    }
+
+    .cats{
+        width: 350px;
+        background-color: #ebecec;
+        color: #464646;
+        border-radius:5px 5px 5px 5px;
+        display: none;
+        grid-template-columns: repeat(3,100px);
+        padding-right: 38px;
+        row-gap: 2px;
+        position: relative;
+        top: -5px;
+        z-index: 2;
+        border: 1px solid #dee8eb;
+        box-shadow: 4px 6px 11px -2px #E8F2F1;
+    }
+
+    .cats > li{
+        font-weight: bold;
+        padding: 3px;
+        background-color: #d9d9d9;
+        border-radius:2px;
     }
 
     .header > div > div > img{
@@ -149,6 +201,7 @@
 
     .container{
         width: calc(100%-30px);
+        min-height: 41vh;
         padding-left: 15px;
         padding-right: 15px;
         display: grid;
@@ -157,32 +210,72 @@
         column-gap: 30px;
         row-gap: 30px;
         justify-items: center;
-
-
     }
 
-    .container div{
+    .container-item{
         width: 270px;
         height: 240px;
         display: grid;
         grid-template-rows: 5fr 1fr;
-
     }
 
-    .container div img{
-        min-width: 100%;
+    .container-item img{
+        width: 100%;
         height: 200px;
         object-fit: cover;
         border-radius: 5px 5px 0 0;
     }
 
-    .container div h4{
+    .item-info{
         height: 40px;
         display: grid;
-        justify-items: center;
+        grid-template-columns: repeat(2,1fr);
         align-items: center;
-        background-color: lightcyan;
+        background-color: #FFF;
         border-radius: 0 0 5px 5px;
+        position: relative;
+        bottom: 40px;
+        border-style: solid;
+        border-color: #e4e4e4;
+        border-width: 1px;
+        border-top-width: 0;
+
+    }
+
+    .item-mrt{
+        padding-left: 10px;
+        justify-content: start;
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: bold;
+        color: #757575;
+        background-color: #FFF;
+    }
+
+    .item-cat{
+        padding-right: 10px;
+        justify-self: end;
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: bold;
+        color: #757575;
+        background-color: #FFF;
+    }
+
+    .item-name{
+        height: 40px;
+        display: grid;
+        z-index: 1;
+        position: relative;
+        bottom: 40px;
+        padding-left: 10px;
+        justify-items: start;
+        align-items: center;
+        font-size: 16px;
+        line-height: 20px;
+        color: #FFF;
+        font-weight: bold;
+        background-color: hsla(0, 0%, 0%, 0.6);
     }
 
     footer{
@@ -210,12 +303,14 @@
     header{
         width: 100%;
     }
-    body nav .nav,main{
+    body nav .nav,main,.header{
         width: 90%;
     }
 
-    .header{
-        width: 87.4%;
+    body nav .nav ul{
+        column-gap: 15px;
+        padding: 15px;
+        grid-template-columns: repeat(2,1fr);
     }
 
 
@@ -223,17 +318,51 @@
         grid-template-columns: repeat(2,1fr);
     }
 
-    .container div{
+    .container-item{
         width:100%;
+        margin-top: 25px;
+        margin-bottom: 25px;
     }
 
+    .container-item img{
+        height: 250px;
+    }
 
 
 }
 
 @media (min-width:360px) and (max-width:600px){
+    body nav .nav{
+        grid-template-columns: 50% 1fr;
+        
+    }
+
+    .header{
+        width: 83%;
+    }
+
+    body nav .nav ul{
+        column-gap: 10px;
+    }
+
+    .header > div{
+        width: 280px;
+    }
+
+    .header div input{
+        width: 195px;
+    }
+
     .container{
         grid-template-columns: 1fr;
+    }
+    .container-item img{
+        height: 200px;
+    }
+
+    .container-item{
+        margin-top: 0px;
+        margin-bottom: 0px;
     }
 
 }
