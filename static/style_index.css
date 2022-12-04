@@ -180,7 +180,7 @@
         border-radius:2px;
     }
 
-    .header > div > div > img{
+    #search > div > img{
         width: 30px;
         height: 30px;
         margin-left: 15px;
@@ -345,11 +345,11 @@
         column-gap: 10px;
     }
 
-    .header > div{
-        width: 280px;
+    #search {
+        width: 275px;
     }
 
-    .header div input{
+    #search input{
         width: 195px;
     }
 
