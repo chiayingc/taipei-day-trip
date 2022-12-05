@@ -158,13 +158,13 @@
     }
 
     .cats{
-        width: 373px;
+        width: 368px;
         background-color: #FFFFFF;
         color: #000000;
         border-radius:5px 5px 5px 5px;
         display: none;
         grid-template-columns: repeat(3,100px);
-        padding-left: 15px;
+        padding-left: 20px;
         padding-top: 10px;
         padding-bottom: 10px;
         column-gap: 15px;
