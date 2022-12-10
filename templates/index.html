@@ -48,7 +48,7 @@
 
 
     <script>
-        const attractions = "http://52.192.27.239:3000/api/attractions?page=";
+        const attractions = "http://127.0.0.1:3000/api/attractions?page=";
         let url="";
         const cats=document.querySelector("#cats");
         
@@ -97,7 +97,7 @@
                         newName.id = "item-name" + idi;
                         item.appendChild(newName);
                         let name = document.querySelector("#item-name" + idi);
-                        name.innerHTML = data[i]["name"];
+                        name.innerHTML = "<a href='http://127.0.0.1:3000/attraction/" + idi + "'>" + data[i]["name"]+"</a>";
 
                         newInfo.id = "item-info" + idi;
                         item.appendChild(newInfo);
@@ -121,7 +121,7 @@
         }
 
         function getCat(){
-            url="http://52.192.27.239:3000/api/categories";
+            url="http://127.0.0.1:3000/api/categories";
             return fetch(url)
                 .then(function (response) {
                     return response.json();

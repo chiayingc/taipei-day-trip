@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
 
 *{
     padding: 0;
@@ -158,29 +158,40 @@
     }
 
     .cats{
-        width: 350px;
-        background-color: #ebecec;
-        color: #464646;
+        width: 368px;
+        background-color: #FFFFFF;
+        color: #000000;
         border-radius:5px 5px 5px 5px;
         display: none;
         grid-template-columns: repeat(3,100px);
-        padding-right: 38px;
+        padding-left: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        column-gap: 15px;
         row-gap: 2px;
         position: relative;
-        top: -5px;
+        top: 1px;
         z-index: 2;
         border: 1px solid #dee8eb;
         box-shadow: 4px 6px 11px -2px #E8F2F1;
     }
 
     .cats > li{
-        font-weight: bold;
-        padding: 3px;
-        background-color: #d9d9d9;
-        border-radius:2px;
+        width: 90px;
+        height: 20px;
+        font-size: 15px;
+        padding: 10px;
+        background-color: #FFFFFF;
+        border-radius:5px;
+        padding-left: 15px;
     }
 
-    .header > div > div > img{
+    .cats > li:hover{
+        background-color: #E8E8E8;
+        cursor: pointer;
+    }
+
+    #search > div > img{
         width: 30px;
         height: 30px;
         margin-left: 15px;
@@ -247,7 +258,6 @@
         justify-content: start;
         font-size: 16px;
         line-height: 20px;
-        font-weight: bold;
         color: #757575;
         background-color: #FFF;
     }
@@ -257,12 +267,11 @@
         justify-self: end;
         font-size: 16px;
         line-height: 20px;
-        font-weight: bold;
         color: #757575;
         background-color: #FFF;
     }
 
-    .item-name{
+    .item-name > a{
         height: 40px;
         display: grid;
         z-index: 1;
@@ -274,8 +283,9 @@
         font-size: 16px;
         line-height: 20px;
         color: #FFF;
-        font-weight: bold;
+        font-weight: 500;
         background-color: hsla(0, 0%, 0%, 0.6);
+        text-decoration:none;
     }
 
     footer{
@@ -345,12 +355,29 @@
         column-gap: 10px;
     }
 
-    .header > div{
-        width: 280px;
+    #search {
+        width: 275px;
     }
 
-    .header div input{
+    #search input{
         width: 195px;
+    }
+
+    .cats{
+        width: 290px;
+        grid-template-columns: repeat(3,1fr);
+        column-gap: 0px;
+        row-gap: 1px;
+        padding-left: 5px;
+        padding-right: 20px;
+    }
+
+    .cats > li{
+        height: 20px;
+        font-size: 12px;
+        padding: 5px;
+        background-color: #FFFFFF;
+        border-radius:5px;
     }
 
     .container{
