@@ -214,6 +214,7 @@
     .option11{
         grid-row: 3/4;
         width: 200px;
+        padding-left: 30px;
     }
     .option2{
         grid-area: 4/1/5/2;
