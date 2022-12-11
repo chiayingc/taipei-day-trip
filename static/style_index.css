@@ -37,8 +37,8 @@
     body nav .nav ul{
         display: grid;
         grid-template-columns: repeat(2,100px);
-        font-size: 16px;
-        line-height: 20px;
+        font-size: 14px;
+        line-height: 18px;
         color: #666666;
         padding: 20px;
         justify-self: end;
@@ -51,8 +51,8 @@
     }
 
     .nav h2{
-        font-size: 30px;
-        line-height: 34px;
+        font-size: 28px;
+        line-height: 32px;
         color: #448899;
 
         font-weight: bolder;
@@ -123,6 +123,7 @@
         position: relative;
         top: 0px;
         z-index: 2;
+        cursor: pointer;
     }
 
     #search input{
@@ -132,8 +133,8 @@
         justify-items: flex-start;
         background-color: #FFF;
         font-weight: 700;
-        font-size: 16px;
-        line-height: 20px;
+        font-size: 14px;
+        line-height: 16px;
         color: #757575;
         border: 0;
         outline: none;
@@ -343,7 +344,7 @@
 
 @media (min-width:360px) and (max-width:600px){
     body nav .nav{
-        grid-template-columns: 50% 1fr;
+        grid-template-columns: 45% 1fr;
         
     }
 
@@ -352,7 +353,8 @@
     }
 
     body nav .nav ul{
-        column-gap: 10px;
+        column-gap: 8px;
+        font-size: 13px;
     }
 
     #search {

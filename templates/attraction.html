@@ -82,7 +82,7 @@
             attractionNo=attractionNo.split("/");
             attractionNo=attractionNo[attractionNo.length-1];
 
-            let url="http://52.192.27.239:3000/api/attraction/";
+            let url="/api/attraction/";
             return fetch(url+attractionNo)
                 .then(function (response) {
                     return response.json();
@@ -135,15 +135,18 @@
 
         // Next/previous controls
         function changeSlides(n) {
+            slideIndex=parseInt(slideIndex);
             showSlides(slideIndex += n);
         }
 
         // Thumbnail image controls
         function currentSlide(n) {
+            slideIndex=n;
             showSlides(slideIndex = n);
         }
 
         function showSlides(n) {
+            
             let i;
             let slides = document.getElementsByClassName("img");
             let dots = document.getElementsByClassName("dot");
