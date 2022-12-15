@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title">台北一日遊</title> 
+    <link rel="stylesheet" href="/style_attraction.css">
+</head>
+
+<body>
+    <div class="noCats" onclick="noCats()"><div></div></div>
+    <nav>
+        <div class="nav">
+            <h2>台北一日遊</h2>
+            <ul>
+                <li>預定行程</li>
+                <li>登入/註冊</li>
+            </ul>
+        </div>
+    </nav>
+    
+    <section class="top">
+        <div class="slideshow">
+            <div class="images">
+            </div>
+            <div class="arrow">
+                <img src="/images/btn_leftArrow.png" alt="" class="prev" onclick="changeSlides(-1)">
+                <img src="/images/btn_rightArrow.png" alt="" class="next" onclick="changeSlides(1)">
+            </div>
+            <div class="dots">
+            </div>
+        </div>
+        <div class="information">
+            <div class="attractionName">attrctionName</div>
+            <div class="attractionCat">category at MRT</div>
+            <div class="booking">
+                <h3 class="booktitle">訂購導覽行程</h3>
+                <div class="slogan">以此景點為中心的一日行程，帶您探索城市角落故事</div>
+                <span class="option1">選擇日期： </span> <input class="option11" type="date" name="date" placeholder="yyyy/mm/dd" />
+                <span class="option2">選擇時間： </span> 
+                <input class="option21" type="radio" name="time" value="morning" onclick="setMor()" checked/><span class="option211">上半天</span>
+                <input class="option22" type="radio" name="time" value="afternoon" onclick="setAft()"/><span class="option221">下半天</span>
+                <div class="option3">導覽費用：</div><span id="cost">新台幣 2000 元</span>
+                <button>開始預約行程</button>
+            </div>
+        </div>
+    </section>
+    <div class="line"></div>
+    <section class="bottom">
+        <div class="description">
+        </div>
+        <div class="address">
+        </div>
+        <div class="transport">
+        </div>
+    </section>
+   
+    
+    <footer>
+        <p>COPYRIGHT © 2022 台北一日遊</p>
+    </footer>
+
+
+    <script>
+        getData();
+
+        const cost=document.querySelector("#cost");
+        const title=document.querySelector("#title");
+        const attractionName=document.querySelector(".attractionName");
+        const attractionCat=document.querySelector(".attractionCat");  
+        const address=document.querySelector(".address");  
+        const transport=document.querySelector(".transport");
+        const description=document.querySelector(".description");
+        const images=document.querySelector(".images");
+        
+        const dots=document.querySelector(".dots");
+        let slideIndex=1;
+
+        function getData(){
+            let attractionNo=location.pathname;
+            attractionNo=attractionNo.split("/");
+            attractionNo=attractionNo[attractionNo.length-1];
+
+            let url="/api/attraction/";
+            return fetch(url+attractionNo)
+                .then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    data=data["data"];
+
+                    attractionName.innerHTML=data["name"];
+                    title.innerHTML="台北一日遊 ─ "+data["name"];
+                    attractionCat.innerHTML=data["category"]+ " at " +data["mrt"];
+                    address.innerHTML="<span>景點地址：</span><br>"+data["address"];
+                    transport.innerHTML="<span>交通方式：</span><br>"+data["transport"];
+                    description.innerHTML=data["description"];
+                    
+                    for(m=1;m<=data["images"].length;m++){
+                        let newImgdiv=document.createElement("div");
+                        newImgdiv.className="img fade";
+                        newImgdiv.id="img"+m;
+                        images.appendChild(newImgdiv);
+                        let newImg=document.createElement("img");
+                        newImg.src=data["images"][m-1];
+                        newImg.style.display="grid";
+                        document.querySelector("#img"+m).appendChild(newImg);
+                        let newdot=document.createElement("div");
+                        newdot.className="dot";
+                        newdot.id="dot"+m;
+                        
+                        dots.appendChild(newdot);
+                        newdot.addEventListener('click',()=>{
+                                m=newdot.id.split("dot");
+                                m=m[m.length-1];
+                                currentSlide(m);
+                            });
+                    }
+
+                    showSlides(slideIndex);
+                    
+                });
+        }
+
+        
+        
+        function setMor(){
+            cost.innerHTML="新台幣 2000 元"
+        }
+
+        function setAft(){
+            cost.innerHTML="新台幣 2500 元"
+        }
+
+
+        // Next/previous controls
+        function changeSlides(n) {
+            slideIndex=parseInt(slideIndex);
+            showSlides(slideIndex += n);
+        }
+
+        // Thumbnail image controls
+        function currentSlide(n) {
+            slideIndex=n;
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            
+            let i;
+            let slides = document.getElementsByClassName("img");
+            let dots = document.getElementsByClassName("dot");
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex-1].style.display="block";
+            dots[slideIndex-1].className += " active";
+        }
+    </script>
+
+</body>
+
+</html>

@@ -13,7 +13,7 @@ connection_pool=pooling.MySQLConnectionPool(pool_name="pynative_pool",
 											host="localhost",
 											database="tpidaytrip",
 											user="root",
-											password="meowmeow"
+											password="********"
 											)
 
 
@@ -25,9 +25,6 @@ app.config["TEMPLATES_AUTO_RELOAD"]=True
 app.config["JSON_SORT_KEYS"] = False
 
 # Pages
-@app.route("/test")
-def test():
-	return render_template("test.html")
 	
 @app.route("/")
 def index():
@@ -36,6 +33,7 @@ def index():
 @app.route("/attraction/<id>")
 def attraction(id):
 	return render_template("attraction.html")
+
 
 @app.route("/booking")
 def booking():
