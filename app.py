@@ -3,8 +3,11 @@ from flask import *
 from mysql.connector import Error
 from mysql.connector import pooling
 
-import json,re
+import json,re,jwt
+from flask_bcrypt import Bcrypt
 
+bcrypt=Bcrypt()
+jwtKey="**************"
 
 
 connection_pool=pooling.MySQLConnectionPool(pool_name="pynative_pool",
@@ -34,15 +37,15 @@ def index():
 def attraction(id):
 	return render_template("attraction.html")
 
-
 @app.route("/booking")
 def booking():
 	return render_template("booking.html")
+
 @app.route("/thankyou")
 def thankyou():
 	return render_template("thankyou.html")
 
-
+# API
 
 @app.route("/api/attractions")
 def attractionsapi():
@@ -221,6 +224,145 @@ def categories():
 		cursor.close()
 		connection_object.close()
 		print("connection closed.")
+
+
+@app.route("/api/user",methods=["post"])
+def apiuser():
+	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+
+			userdata=request.json
+			username=userdata["username"]
+			email=userdata["email"]
+			password=userdata["password"]
+
+			##檢查email是否重複
+			sql="SELECT id FROM member WHERE email LIKE %s"
+			cursor.execute(sql,(email,))
+			result=cursor.fetchone()
+			if result == None:
+				encrypt_password=bcrypt.generate_password_hash(password).decode('utf-8')
+				sql="INSERT INTO member(username,email,password)VALUES(%s,%s,%s)"
+				val=(username,email,encrypt_password)
+				cursor.execute(sql,val)
+				connection_object.commit()
+				# print("commited")
+				result={}
+				result["ok"]=True
+				return jsonify(result)
+			else:
+				result={}
+				result["error"]=True
+				result["message"]="註冊失敗，重複的 Email或其他原因"
+				return jsonify(result)
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+	
+	except:
+		result={}
+		result["error"]=True
+		result["message"]="伺服器內部錯誤"
+		return jsonify(result),500
+
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
+
+
+@app.route("/api/user/auth",methods=["GET"])
+def apiuserauth_get():
+	try:
+		token_jwt=request.cookies.get("token")
+		data=jwt.decode(token_jwt,jwtKey,algorithms="HS256")
+		result={}
+		result["data"]={"id":data["id"],
+						"name":data["name"],
+						"email":data["email"],
+						}
+		return jsonify(result)
+	except:
+		result={}
+		result["data"]=None
+		return jsonify(result)
+
+
+@app.route("/api/user/auth",methods=["PUT"])
+def apiuserauth_put():
+	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+
+			signindata=request.json
+			email=signindata["email"]
+			password=signindata["password"]
+			print("email:",email,"password:",password)
+
+			##檢查email是否存在
+			sql="SELECT id,username,email,password FROM member WHERE email LIKE %s"
+			cursor.execute(sql,(email,))
+			result=cursor.fetchone()
+			print(result)
+			if result == None:
+				result={}
+				result["error"]=True
+				result["message"]="登入失敗，Email尚未註冊"
+				return jsonify(result)
+			else:
+				#檢查密碼是否正確
+				check_password=bcrypt.check_password_hash(result[3], password)
+
+				if(check_password==True):
+					encoded_jwt=jwt.encode({"id":result[0],"name":result[1],"email":result[2]},jwtKey,algorithm="HS256")
+					result={}
+					result["ok"]=True
+					response=make_response(jsonify(result))
+					response.set_cookie(key="token", value=encoded_jwt, max_age=604800)
+					return response
+				else:
+					result={}
+					result["error"]=True
+					result["message"]="信箱或密碼錯誤"
+					return jsonify(result),400
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+	
+	except:
+		result={}
+		result["error"]=True
+		result["message"]="伺服器內部錯誤"
+		return jsonify(result),500
+
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
+
+
+@app.route("/api/user/auth",methods=["DELET"])
+def apiuserauth_delet():
+	result={}
+	result["ok"]=True
+	response=make_response(jsonify(result))
+	response.set_cookie(key="token", value="",max_age=-1)
+	return response
 
 
 app.run(host="0.0.0.0",port=3000)
