@@ -1,16 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
 
 *{ 
     margin: 0; 
     padding: 0; 
     box-sizing:border-box;
-    
+    font-family: 'Noto Sans TC';
  } 
 
- @media only screen and (max-width:1920px) {
-    
+ @media (max-width:1920px) {
  
     body{
+        width: 100%;
         background-color: #fff;
         display: grid;
         grid-template-columns: 1fr;
@@ -51,6 +51,7 @@
     li{
         list-style-type: none;
         justify-self: end;
+        cursor: pointer;
     }
 
     .nav h2{
@@ -58,6 +59,124 @@
         line-height: 32px;
         color: #448899;
         font-weight: bolder;
+    }
+
+    #signinbox{
+        width: 340px;
+        /* height: 330px; */
+        border-radius: 5px;
+        position: absolute;
+        top: 80px;
+        left: calc(50%-166px);
+        z-index: 3;
+        padding: 15px;
+        display: none;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(5,1fr);
+        row-gap: 10px;
+        justify-items: center;
+        background: #FFFFFF;
+        box-shadow: 0px 4px 60px #AAAAAA;
+    }
+
+    #signupbox{
+        width: 340px;
+        /* height: 330px; */
+        border-radius: 5px;
+        position: absolute;
+        top: 80px;
+        left: calc(50%-166px);
+        z-index: 3;
+        padding: 15px;
+        display: none;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(6,1fr);
+        row-gap: 10px;
+        justify-items: center;
+        background: #FFFFFF;
+        box-shadow: 0px 4px 60px #AAAAAA;
+    }
+
+    #hintrow{
+        display: none;
+        grid-row: 5/6;
+        justify-self: left;
+        padding-left: 10px;
+        font-size: .6rem;
+        height: fit-content;
+        color: rgb(159, 0, 0);
+    }
+
+    #hintrow_signin{
+        display: none;
+        grid-row: 4/5;
+        justify-self: left;
+        padding-left: 10px;
+        font-size: .6rem;
+        height: fit-content;
+        color: rgb(159, 0, 0);
+    }
+
+    .signbox_top{
+        position: absolute;
+        top: 0;
+        border-radius: 5px 5px 0 0;
+        height: 10px;
+        width: 100%;
+        background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
+    }
+
+    #signup_title,#signin_title{
+        width: 100%;
+        margin-top: 15px;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 22px;
+        color: #666666;
+        display: flex;
+        justify-content: center;
+    }
+    #signbox_close,#signin_close{
+        width: 16px;
+        height: 16px;
+        align-self: top;
+        position: absolute;
+        right: 15px;
+        cursor: pointer;
+    }
+
+    #signupbox > input,#signinbox > input{
+        width: 310px;
+        height: 47px;
+        border-radius: 5px;
+        border: 1px solid #CCCCCC;
+        outline: none;
+        padding: 10px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 16px;
+    }
+    #signupbox > button,#signinbox > button{
+        width: 310px;
+        height: 47px;
+        background: #448899;
+        border-radius: 5px;
+        border: 0;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 300;
+        line-height: 20px;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    #toSignIn,#toSignUp{
+        align-self: center;
+        color: #757575;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 16px;
+        cursor: pointer;
     }
 
     .top{
@@ -214,6 +333,10 @@
     .option11{
         grid-row: 3/4;
         width: 200px;
+        padding-left: 10px;
+        padding-right: 34px;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
     .option2{
         grid-area: 4/1/5/2;
@@ -407,7 +530,7 @@
         margin-top: -25px;
     }
     
-
-
-
+    #signupbox,#signinbox{
+        width: 90%;
+    }
 }

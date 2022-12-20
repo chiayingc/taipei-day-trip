@@ -13,13 +13,35 @@
     <nav>
         <div class="nav">
             <h2>台北一日遊</h2>
-            <ul>
-                <li>預定行程</li>
-                <li>登入/註冊</li>
+            <ul id="nav_button">
+                <li id="toBooking">預定行程</li>
+                <li id="toSign"></li>
             </ul>
+        </div>
+        <div id="signinbox">
+            <div class="signbox_top">
+            </div>
+            <div id="signin_title">登入會員帳號 <img src="/images/icon_close.png" alt="" id="signin_close"></div>
+            <input type="email" name="email_signin" id="email_signin" placeholder="輸入電子郵件*" />
+            <input type="password" name="password_signin" id="password_signin" placeholder="輸入密碼*" />
+            <div id="hintrow_signin">&#215;：資料格式錯誤，請重新填寫</div>
+            <button id="signIn">登入帳戶</button>
+            <div id="toSignUp">還沒有帳戶？點此註冊</div>
+        </div>
+        <div id="signupbox">
+            <div class="signbox_top">
+            </div>
+            <div id="signup_title">註冊會員帳號 <img src="/images/icon_close.png" alt="" id="signbox_close"></div>
+            <input type="text" name="username" id="username" placeholder="輸入姓名*"/>
+            <input type="email" name="email" id="email" placeholder="輸入電子郵件*" />
+            <input type="password" name="password" id="password" placeholder="輸入密碼*" />
+            <div id="hintrow">&#215;：資料格式錯誤，請重新填寫</div>
+            <button id="signNew">註冊新帳戶</button>
+            <div id="toSignIn">已經有帳戶了？點此登入</div>
         </div>
 
     </nav>
+    
 
     <header>
         <div class="header">
@@ -194,6 +216,187 @@
         function noCats(){
             cats.style.display="none";
         }
+
+        //user function
+        const toBooking=document.querySelector("#toBooking");
+        const toSign=document.querySelector("#toSign");
+        const signupbox=document.querySelector("#signupbox");
+        const signinbox=document.querySelector("#signinbox");
+        const signboxClose=document.querySelector("#signbox_close");
+        const signinClose=document.querySelector("#signin_close");
+        const signNew=document.querySelector("#signNew");
+        const hintrow=document.querySelector("#hintrow");
+        const hintrow_signin=document.querySelector("#hintrow_signin");
+        const toSignIn=document.querySelector("#toSignIn");
+        const toSignUp=document.querySelector("#toSignUp");
+        const sign_in=document.querySelector("#signIn");
+        
+        document.addEventListener("DOMContentLoaded",()=>{
+            fetch("/api/user/auth", {
+                    method: "GET",
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["data"]!=null){
+                        toSign.id="toSignOut";
+                        const toSignOut=document.querySelector("#toSignOut");
+                        toSignOut.innerText="登出系統";
+                        toSignOut.addEventListener("click",()=>{
+                            fetch("/api/user/auth", {
+                                    method: "DELET",
+                                    headers: { "content-type": "application/json"}
+                                }).then(function(response){
+                                    return response.json();
+                                }).then(function(data){
+                                    if(data["ok"]==true){
+                                        location.reload();
+                                    }
+                                });
+                        });
+                    }
+                    else{
+                        toSign.innerText="登入/註冊";
+                        toSign.addEventListener("click",()=>{
+                            signinbox.style.display="grid";
+                        });
+                    }
+                });
+        });
+
+        
+        signboxClose.addEventListener("click",()=>{
+            signupbox.style.display="none";
+        });
+        signinClose.addEventListener("click",()=>{
+            signinbox.style.display="none";
+        });
+        toSignIn.addEventListener("click",()=>{
+            signupbox.style.display="none";
+            signinbox.style.display="grid";
+        });
+        toSignUp.addEventListener("click",()=>{
+            signinbox.style.display="none";
+            signupbox.style.display="grid";
+        });
+
+        signNew.addEventListener("click",signUp);
+        sign_in.addEventListener("click",signIn);
+
+
+        function signUp(){
+            signupbox.style.gridTemplateRows="repeat(6,1fr)";
+            hintrow.style.display="none";
+            hintrow.style.color="rgb(159, 0, 0)";
+
+            let username=document.querySelector("#username").value;
+            //姓名格式|中文、英文但不包括底線，可以有空格|
+            let reg_username=username.replace(/\s*/g,"").search("^[\\u4E00-\\u9FA5A-Za-z]+$");
+
+            let email=document.querySelector("#email").value;
+            //email格式
+            let reg_email=email.search("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$");
+            
+            let password=document.querySelector("#password").value;
+            //密碼格式|以字母開頭，只能包含字母、數字和底線|
+            let reg_password=password.search("^[a-zA-Z]\\w");
+            
+            //檢查資料格式
+            if(username=="" || email=="" || password==""){
+                signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                hintrow.innerHTML="×：資料填寫不完全，請重新輸入。"
+                hintrow.style.display="grid";
+            }
+            else if(username.length>30||username.length<2||email.length>320||password.length>18||password.length<6){
+                signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                hintrow.innerHTML="×：資料長度不符，請重新輸入。"
+                hintrow.style.display="grid";
+            }
+            else if((reg_username==-1) || (reg_email==-1) ||(reg_password==-1)){
+                signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                hintrow.innerHTML="×：資料格式錯誤，請重新填寫。"
+                hintrow.style.display="grid";
+            }
+            else{
+                //檢查email是否重複
+                fetch("/api/user", {
+                    method: "POST",
+                    body: JSON.stringify({username: username,
+                                        password: password,
+                                        email: email
+                                        }),
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["ok"]==true){
+                        ///註冊成功
+                        signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                        hintrow.innerHTML="註冊成功。"
+                        hintrow.style.display="grid";
+                        hintrow.style.color="#009393";
+                    }
+                    else{
+                        ///註冊失敗
+                        signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                        hintrow.innerHTML=data["message"]
+                        hintrow.style.display="grid";
+                    }
+                });
+            }
+        }
+
+
+        function signIn(){
+            signinbox.style.gridTemplateRows="repeat(5,1fr)";
+            hintrow_signin.style.display="none";
+            hintrow_signin.style.color="rgb(159, 0, 0)";
+
+            let email_signin=document.querySelector("#email_signin").value;
+            //email格式
+            let reg_email_signin=email_signin.search("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$");
+            
+            let password_signin=document.querySelector("#password_signin").value;
+            //密碼格式|以字母開頭，只能包含字母、數字和底線|
+            let reg_password_signin=password_signin.search("^[a-zA-Z]\\w");
+            
+            //檢查資料格式
+            if(email_signin=="" || password_signin==""){
+                signinbox.style.gridTemplateRows="repeat(3,1fr) 15px repeat(2,1fr)";
+                hintrow_signin.innerHTML="×：資料填寫不完全，請重新輸入。"
+                hintrow_signin.style.display="grid";
+            }
+            else if((reg_email_signin==-1) ||(reg_password_signin==-1)){
+                signinbox.style.gridTemplateRows="repeat(3,1fr) 15px repeat(2,1fr)";
+                hintrow_signin.innerHTML="×：無效的信箱或密碼，請重新填寫。"
+                hintrow_signin.style.display="grid";
+            }
+            else{
+                //檢查email是否存在、信箱跟密碼是否正確
+                fetch("/api/user/auth", {
+                    method: "PUT",
+                    body: JSON.stringify({email: email_signin,
+                                        password: password_signin,
+                                        }),
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["ok"]==true){
+                        ///登入成功
+                        location.reload();
+                    }
+                    else{
+                        ///註冊失敗
+                        signinbox.style.gridTemplateRows="repeat(3,1fr) 15px repeat(2,1fr)";
+                        hintrow_signin.innerHTML=data["message"]
+                        hintrow_signin.style.display="grid";
+                    }
+                });
+            }
+
+        }
+        //
 
 
 
