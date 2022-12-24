@@ -5,6 +5,7 @@ from mysql.connector import pooling
 
 import json,re,jwt
 from flask_bcrypt import Bcrypt
+import datetime
 
 bcrypt=Bcrypt()
 jwtKey="**************"
@@ -28,6 +29,9 @@ app.config["TEMPLATES_AUTO_RELOAD"]=True
 app.config["JSON_SORT_KEYS"] = False
 
 # Pages
+@app.route("/test")
+def test():
+	return render_template("test_booking.html")
 	
 @app.route("/")
 def index():
@@ -63,6 +67,10 @@ def attractionsapi():
 
 		else:
 			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
 
 		page=request.args.get("page","0")
 		page=int(page)
@@ -141,6 +149,10 @@ def attractionapi(id):
 
 		else:
 			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
 
 		attId=int(id)
 		sql = "SELECT count(*) FROM attractions"
@@ -203,6 +215,10 @@ def categories():
 
 		else:
 			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
 
 		sql = "SELECT DISTINCT CAT FROM attractions"
 		cursor.execute(sql)
@@ -266,6 +282,10 @@ def apiuser():
 				return jsonify(result)
 		else:
 			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
 	
 	except:
 		result={}
@@ -343,6 +363,10 @@ def apiuserauth_put():
 					return jsonify(result),400
 		else:
 			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
 	
 	except:
 		result={}
@@ -363,6 +387,198 @@ def apiuserauth_delet():
 	response=make_response(jsonify(result))
 	response.set_cookie(key="token", value="",max_age=-1)
 	return response
+
+
+#####################################################
+
+@app.route("/api/booking",methods=["GET"])
+def apibooking_get():
+	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+			token_jwt=request.cookies.get("token")
+			if token_jwt == None:
+				result={}
+				result["error"]=True
+				result["message"]="未登入系統，拒絕存取。"
+				return jsonify(result),403
+			else:
+				memberData=jwt.decode(token_jwt,jwtKey,algorithms="HS256")
+				memberId=memberData["id"]
+				sql="SELECT attractions.id, attractions.name, attractions.address, attractions.file, booking.date, booking.time, booking.price, booking.status FROM booking INNER JOIN attractions ON attraction_id = attractions.id WHERE booking.member_id = %s"
+				cursor.execute(sql,(memberId,))
+				bookedData=cursor.fetchall()
+				if bookedData==[]:
+					result={}
+					result["data"]=None
+					return jsonify(result),200
+					
+				result={}
+				result["data"]={}
+				for i in range(len(bookedData)):
+					images=json.loads(bookedData[i][3])
+					result["data"][i]={"attaction":{"id":bookedData[i][0],"name":bookedData[i][1],"address":bookedData[i][2],"image":images[0]},"date":bookedData[i][4],"time":bookedData[i][5],"price":bookedData[i][6],"status":bookedData[i][7]}
+				return jsonify(result),200
+
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
+	
+	except:
+		result={}
+		result["error"]=True
+		result["message"]="伺服器內部錯誤"
+		return jsonify(result),500
+	
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
+
+
+@app.route("/api/booking",methods=["POST"])
+def apibooking_post():
+	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+			token_jwt=request.cookies.get("token")
+			if token_jwt == None:
+				result={}
+				result["error"]=True
+				result["message"]="未登入系統，拒絕存取。"
+				return jsonify(result),403
+			else:
+				try:
+					booked_data=request.json
+					booked_att_id=booked_data["attractionId"]
+					booked_date=booked_data["date"]
+					booked_time=booked_data["time"]
+					booked_price=booked_data["price"]
+
+					if booked_date=="" or booked_time=="":
+						result={}
+						result["error"]=True
+						result["message"]="資料不完整，預定失敗"
+						return jsonify(result),400
+				except:
+					result={}
+					result["error"]=True
+					result["message"]="資料不正確或其他原因，預定失敗"
+					return jsonify(result),400
+
+				memberData=jwt.decode(token_jwt,jwtKey,algorithms="HS256")
+				memberId=memberData["id"]
+				sql="SELECT * FROM booking WHERE member_id=%s AND attraction_id=%s AND date=%s AND time=%s"
+				val=(memberId,booked_att_id,booked_date,booked_time)
+				cursor.execute(sql,val)
+				check_repeat=cursor.fetchone()
+				if(check_repeat != None):
+					result={}
+					result["error"]=True
+					result["message"]="重複預定"
+					return jsonify(result),400
+
+				sql="INSERT INTO booking(member_id,attraction_id,date,time,price,status)VALUES(%s,%s,%s,%s,%s,%s)"
+				val=(memberId,booked_att_id,booked_date,booked_time,booked_price,"N")
+				cursor.execute(sql,val)
+				connection_object.commit()
+				result={}
+				result["ok"]=True
+				return jsonify(result),200
+
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
+	
+	except:
+		result={}
+		result["error"]=True
+		result["message"]="伺服器內部錯誤"
+		return jsonify(result),500
+	
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
+
+
+@app.route("/api/booking",methods=["DELETE"])
+def apibooking_delete():
+	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+			token_jwt=request.cookies.get("token")
+			if token_jwt == None:
+				result={}
+				result["error"]=True
+				result["message"]="未登入系統，拒絕存取。"
+				return jsonify(result),403
+			else:
+				memberData=jwt.decode(token_jwt,jwtKey,algorithms="HS256")
+				memberId=memberData["id"]
+				booked_data=request.json
+				booked_att_id=booked_data["attraction_id"]
+				booked_date=booked_data["date"]
+				booked_time=booked_data["time"]
+
+				sql="DELETE FROM booking WHERE member_id=%s AND attraction_id=%s AND date=%s AND time=%s"
+				val=(memberId,booked_att_id,booked_date,booked_time)
+				cursor.execute(sql,val)
+				connection_object.commit()
+				result={}
+				result["ok"]=True
+				return jsonify(result),200
+
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
+	
+	except:
+		result={}
+		result["error"]=True
+		result["message"]="伺服器內部錯誤"
+		return jsonify(result),500
+	
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
+
+
+#####################################################
 
 
 app.run(host="0.0.0.0",port=3000)

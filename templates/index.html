@@ -12,7 +12,7 @@
     <div class="noCats" onclick="noCats()"><div></div></div>
     <nav>
         <div class="nav">
-            <h2>台北一日遊</h2>
+            <h2 id="webTitle">台北一日遊</h2>
             <ul id="nav_button">
                 <li id="toBooking">預定行程</li>
                 <li id="toSign"></li>
@@ -78,6 +78,11 @@
         let nextpage=0;
         let key=false;
         let keyword="";
+
+        const webTitle=document.querySelector("#webTitle");
+        webTitle.addEventListener("click",()=>{
+            window.location.href="/";
+        });
 
         function fetchData() {
             flag=false;
@@ -397,6 +402,22 @@
 
         }
         //
+
+        toBooking.addEventListener("click",()=>{
+            fetch("/api/user/auth", {
+                    method: "GET",
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["data"]!=null){
+                        window.location.href="/booking";
+                    }
+                    else{
+                        signinbox.style.display="grid";
+                    }
+            });
+        });
 
 
 
