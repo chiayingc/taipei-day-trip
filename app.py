@@ -9,7 +9,7 @@ import datetime
 import requests
 
 bcrypt=Bcrypt()
-jwtKey="***********"
+jwtKey="*********"
 
 
 connection_pool=pooling.MySQLConnectionPool(pool_name="pynative_pool",
