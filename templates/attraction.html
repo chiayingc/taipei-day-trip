@@ -12,7 +12,7 @@
     <div class="noCats" onclick="noCats()"><div></div></div>
     <nav>
         <div class="nav">
-            <h2>台北一日遊</h2>
+            <h2 id="webTitle">台北一日遊</h2>
             <ul id="nav_button">
                 <li id="toBooking">預定行程</li>
                 <li id="toSign"></li>
@@ -58,12 +58,12 @@
             <div class="booking">
                 <h3 class="booktitle">訂購導覽行程</h3>
                 <div class="slogan">以此景點為中心的一日行程，帶您探索城市角落故事</div>
-                <span class="option1">選擇日期： </span> <input class="option11" type="date" name="date" placeholder="yyyy/mm/dd" />
+                <span class="option1">選擇日期： </span> <input class="option11" type="date" id="date" name="date" placeholder="yyyy/mm/dd" />
                 <span class="option2">選擇時間： </span> 
-                <input class="option21" type="radio" name="time" value="morning" onclick="setMor()" checked/><span class="option211">上半天</span>
+                <input class="option21" type="radio" name="time" value="morning" onclick="setMor()"/><span class="option211">上半天</span>
                 <input class="option22" type="radio" name="time" value="afternoon" onclick="setAft()"/><span class="option221">下半天</span>
-                <div class="option3">導覽費用：</div><span id="cost">新台幣 2000 元</span>
-                <button>開始預約行程</button>
+                <div class="option3">導覽費用：</div><span id="cost">新台幣 ____ 元</span>
+                <button id="startBooking">開始預約行程</button>
             </div>
         </div>
     </section>
@@ -85,6 +85,19 @@
 
     <script>
         getData();
+
+        const webTitle=document.querySelector("#webTitle");
+        webTitle.addEventListener("click",()=>{
+            window.location.href="/";
+        });
+
+
+        let Today=new Date();
+        dateMin=Today.getFullYear()+ "-" + (Today.getMonth()+1) + "-" + Today.getDate();
+        dateDefault=Today.getFullYear()+ "-" + (Today.getMonth()+1) + "-" + parseInt(Today.getDate()+1);
+        const date_input=document.querySelector("#date");
+        date_input.value=dateDefault;
+        date_input.min=dateMin;
 
         const cost=document.querySelector("#cost");
         const title=document.querySelector("#title");
@@ -109,6 +122,8 @@
         const toSignIn=document.querySelector("#toSignIn");
         const toSignUp=document.querySelector("#toSignUp");
         const sign_in=document.querySelector("#signIn");
+        let time="";
+        let price=0;
         
         document.addEventListener("DOMContentLoaded",()=>{
             fetch("/api/user/auth", {
@@ -329,10 +344,14 @@
         
         function setMor(){
             cost.innerHTML="新台幣 2000 元"
+            time="morning";
+            price=2000;
         }
 
         function setAft(){
             cost.innerHTML="新台幣 2500 元"
+            time="afternoon";
+            price=2500;
         }
 
 
@@ -364,6 +383,71 @@
             slides[slideIndex-1].style.display="block";
             dots[slideIndex-1].className += " active";
         }
+
+        //booking function
+        const startBooking=document.querySelector("#startBooking");
+        startBooking.addEventListener("click",()=>{
+            fetch("/api/user/auth", {
+                    method: "GET",
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["data"]!=null){
+                        let attractionNo=location.pathname;
+                        attractionNo=attractionNo.split("/");
+                        attractionNo=attractionNo[attractionNo.length-1];
+                        const date=document.querySelector("#date");
+                        let booking_date=date.value;
+
+                        fetch("/api/booking", {
+                                method: "POST",
+                                body: JSON.stringify({attractionId: attractionNo,
+                                        date: booking_date,
+                                        time: time,
+                                        price: price
+                                        }),
+                                headers: { "content-type": "application/json"}
+                            }).then(function(response){
+                                return response.json();
+                            }).then(function(data){
+                                if(data["ok"]==true){
+                                    window.location.href="/booking";
+                                }
+                                else{
+                                    let hintcontent=data["message"];
+                                    const booking=document.querySelector(".booking");
+                                    const newSpan=document.createElement("span");
+                                    newSpan.className="hint_text";
+                                    newSpan.id="booking_hint";
+                                    booking.appendChild(newSpan);
+                                    let booking_hint=document.querySelector("#booking_hint");
+                                    booking_hint.innerText=hintcontent;
+                                }
+                        });
+                    }
+                    else{
+                        signinbox.style.display="grid";
+                    }
+            });
+        });
+
+        toBooking.addEventListener("click",()=>{
+            fetch("/api/user/auth", {
+                    method: "GET",
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["data"]!=null){
+                        window.location.href="/booking";
+                    }
+                    else{
+                        signinbox.style.display="grid";
+                    }
+            });
+        });
+        //
     </script>
 
 </body>

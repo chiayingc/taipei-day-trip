@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+*{
+    padding: 0;
+    margin: 0;
+    border: boder-box;
+    font-family: 'Noto Sans TC';
+}
+
+@media (max-width:1920px){
+    body{
+        min-height: 100vh;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 100%;
+        justify-items: center;
+    }
+
+    body nav{
+        width: 100%;
+        height: 54px;
+        background-color: #fff;
+        display: grid;
+        justify-items: center;
+        position:fixed;
+        top: 0;
+        right: 0;
+        z-index: 4;
+    }
+
+    body nav .nav{
+        width: 1200px;
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        align-items: center;
+    }
+
+    body nav .nav ul{
+        display: grid;
+        grid-template-columns: repeat(2,100px);
+        font-size: 14px;
+        line-height: 18px;
+        color: #666666;
+        padding: 20px;
+        justify-self: end;
+        
+    }
+
+    li{
+        list-style-type: none;
+        justify-self: end;
+        cursor: pointer;
+    }
+
+    .nav h2{
+        font-size: 28px;
+        line-height: 32px;
+        color: #448899;
+        font-weight: bolder;
+        cursor: pointer;
+    }
+
+    #signinbox{
+        width: 310px;
+        /* height: 300px; */
+        border-radius: 5px;
+        position: absolute;
+        top: 80px;
+        left: calc(50%-166px);
+        z-index: 3;
+        padding: 15px;
+        display: none;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(5,1fr);
+        row-gap: 10px;
+        justify-items: center;
+        background: #FFFFFF;
+        box-shadow: 0px 4px 60px #AAAAAA;
+    }
+
+    #signupbox{
+        width: 310px;
+        /* height: 300px; */
+        border-radius: 5px;
+        position: absolute;
+        top: 80px;
+        left: calc(50%-166px);
+        z-index: 3;
+        padding: 15px;
+        display: none;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(6,1fr);
+        row-gap: 10px;
+        justify-items: center;
+        background: #FFFFFF;
+        box-shadow: 0px 4px 60px #AAAAAA;
+    }
+
+    #hintrow{
+        display: none;
+        grid-row: 5/6;
+        justify-self: left;
+        padding-left: 10px;
+        font-size: .6rem;
+        height: fit-content;
+        color: rgb(159, 0, 0);
+    }
+
+    #hintrow_signin{
+        display: none;
+        grid-row: 4/5;
+        justify-self: left;
+        padding-left: 10px;
+        font-size: .6rem;
+        height: fit-content;
+        color: rgb(159, 0, 0);
+    }
+
+    .signbox_top{
+        position: absolute;
+        top: 0;
+        border-radius: 5px 5px 0 0;
+        height: 10px;
+        width: 100%;
+        background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
+    }
+
+    #signup_title,#signin_title{
+        width: 100%;
+        margin-top: 15px;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 22px;
+        color: #666666;
+        display: flex;
+        justify-content: center;
+    }
+    #signbox_close,#signin_close{
+        width: 16px;
+        height: 16px;
+        align-self: top;
+        position: absolute;
+        right: 15px;
+        cursor: pointer;
+    }
+
+    #signupbox > input,#signinbox > input{
+        width: 290px;
+        height: 27px;
+        border-radius: 5px;
+        border: 1px solid #CCCCCC;
+        outline: none;
+        padding: 10px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 16px;
+    }
+    #signupbox > button,#signinbox > button{
+        width: 310px;
+        height: 47px;
+        background: #448899;
+        border-radius: 5px;
+        border: 0;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 300;
+        line-height: 20px;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    #toSignIn,#toSignUp{
+        align-self: center;
+        color: #757575;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 16px;
+        cursor: pointer;
+    }
+
+    main{
+        width: 1200px;
+        margin-top: 50px;
+        margin-bottom: 55px;
+        position: relative;
+        top: 54px;
+    }
+
+    footer{
+        position: absolute;
+        bottom: 0;
+        margin-top: 55px;
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        width: 100%;
+        height: 104px;
+        background-color: #757575;
+    }
+
+    footer > p {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        color: #FFFFFF;
+    }
+
+}
+
+@media (max-width:1200px){
+    
+    body nav .nav,main{
+        width: 90%;
+    }
+
+    body nav .nav ul{
+        column-gap: 15px;
+        padding: 15px;
+        grid-template-columns: repeat(2,1fr);
+    }
+
+
+}
+
+@media (min-width:360px) and (max-width:600px){
+    body nav .nav{
+        grid-template-columns: 45% 1fr;
+        
+    }
+
+    .header{
+        width: 83%;
+    }
+
+    body nav .nav ul{
+        column-gap: 8px;
+        font-size: 13px;
+    }
+
+}

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台北一日遊</title>
+    <link rel="stylesheet" href="style_booking.css">
+</head>
+
+<body>
+    <nav>
+        <div class="nav">
+            <h2 id="webTitle">台北一日遊</h2>
+            <ul id="nav_button">
+                <li id="toBooking">預定行程</li>
+                <li id="toSign"></li>
+            </ul>
+        </div>
+        <div id="signinbox">
+            <div class="signbox_top">
+            </div>
+            <div id="signin_title">登入會員帳號 <img src="/images/icon_close.png" alt="" id="signin_close"></div>
+            <input type="email" name="email_signin" id="email_signin" placeholder="輸入電子郵件*" />
+            <input type="password" name="password_signin" id="password_signin" placeholder="輸入密碼*" />
+            <div id="hintrow_signin">&#215;：資料格式錯誤，請重新填寫</div>
+            <button id="signIn">登入帳戶</button>
+            <div id="toSignUp">還沒有帳戶？點此註冊</div>
+        </div>
+        <div id="signupbox">
+            <div class="signbox_top">
+            </div>
+            <div id="signup_title">註冊會員帳號 <img src="/images/icon_close.png" alt="" id="signbox_close"></div>
+            <input type="text" name="username" id="username" placeholder="輸入姓名*"/>
+            <input type="email" name="email" id="email" placeholder="輸入電子郵件*" />
+            <input type="password" name="password" id="password" placeholder="輸入密碼*" />
+            <div id="hintrow">&#215;：資料格式錯誤，請重新填寫</div>
+            <button id="signNew">註冊新帳戶</button>
+            <div id="toSignIn">已經有帳戶了？點此登入</div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="top">
+            <div id="greeting">
+                <span class="second_title">
+                    您好，
+                </span>
+                <span class="second_title" id="greeting_name">
+                    Yakko
+                </span>
+                <span class="second_title">
+                    ，待預定的行程如下：
+                </span>
+            </div>
+            <div id="attraction_info" class="attraction_info">
+            </div>
+        </div>
+        <div class="middle">
+            <div class="second_title">
+                您的聯絡資訊
+            </div>
+            <div id="contact_info">
+                <div>聯絡姓名：</div>
+                <input type="text" id="contact_name" name="contact_name">
+                <div>聯絡信箱：</div>
+                <input type="email" id="contact_email" name="contact_email">
+                <div>手機號碼：</div>
+                <input type="tel" id="contact_tel" name="contact_tel">
+            </div>
+            <div class="hint">
+                請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
+            </div>
+            <div id="contact_hint" class="hint">
+                
+            </div>
+
+        </div>
+        <div class="line"></div>
+        <div class="bottom">
+            <div class="second_title">
+                信用卡付款資訊
+            </div>
+            <div id="pay_info">
+                <div>卡片號碼：</div>
+                <div class="tpfield" id="card-number"></div>
+                <!-- <input id="card-number" class="tpfield" name="pay_number" type="text" inputmode="numeric" pattern="[0-9\s]{13,19}" maxlength="19" placeholder="**** **** **** ****"> -->
+                <div>過期時間：</div>
+                <div class="tpfield" id="card-expiration-date"></div>
+                <!-- <input id="card-expiration-date" class="tpfield" name="pay_time" type="month" placeholder="MM/YY"> -->
+                <div>驗證密碼：</div>
+                <div class="tpfield" id="card-ccv"></div>
+                <!-- <input id="card-ccv" class="tpfield" name="pay_cipher" type="text" maxlength="4" placeholder="CVV"> -->
+            </div>
+            <div id="pay_hint">
+                
+            </div>
+
+        </div>
+        <div class="line"></div>
+        <div class="tail">
+            <div class="price">
+                總價：新台幣<span id="price">2000</span>元
+            </div>
+            <button id="order">
+                確認訂購並付款
+            </button>
+        </div>
+
+    </main> 
+    
+    <footer>
+        <p>COPYRIGHT © 2022 台北一日遊</p>
+    </footer>
+
+
+    <!-- tappay -->
+    <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
+    <script>
+        TPDirect.setupSDK(12700, '*************', 'sandbox')
+    </script>
+    <script>
+        const order=document.querySelector("#order");
+        order.addEventListener("click",onSubmit);
+
+        //tappay setup
+        let fields = {
+            number: {
+                // css selector
+                element: '#card-number',
+                placeholder: '**** **** **** ****'
+            },
+            expirationDate: {
+                // DOM object
+                element: document.getElementById('card-expiration-date'),
+                placeholder: 'MM / YY'
+            },
+            ccv: {
+                element: '#card-ccv',
+                placeholder: 'ccv'
+            }
+        }
+
+        TPDirect.card.setup({
+
+            fields: fields,
+            styles: {
+                // Style all elements
+                'input': {
+                    'color': 'gray',
+                    "font-size": "16px",
+                },
+                // Styling ccv field
+                'input.ccv': {
+                    // 'font-size': '16px'
+                },
+                // Styling expiration-date field
+                'input.expiration-date': {
+                    // 'font-size': '16px'
+                },
+                // Styling card-number field
+                'input.card-number': {
+                    // 'font-size': '16px'
+                },
+                // style focus state
+                ':focus': {
+                    // 'color': 'black'
+                },
+                // style valid state
+                '.valid': {
+                    'color': 'green'
+                },
+                // style invalid state
+                '.invalid': {
+                    'color': 'red'
+                },
+                // Media queries
+                // Note that these apply to the iframe, not the root window.
+                '@media screen and (max-width: 400px)': {
+                    'input': {
+                        'color': 'orange'
+                    }
+                }
+            },
+            // 此設定會顯示卡號輸入正確後，會顯示前六後四碼信用卡卡號
+            // isMaskCreditCardNumber: true,
+            // maskCreditCardNumberRange: {
+            //     beginIndex: 6,
+            //     endIndex: 11
+            // }
+        })
+
+        //tappay onupdate
+        TPDirect.card.onUpdate(function (update) {
+            // update.canGetPrime === true
+            // --> you can call TPDirect.card.getPrime()
+            if (update.canGetPrime) {
+                // Enable submit Button to get prime.
+                // submitButton.removeAttribute('disabled')
+            } else {
+                // Disable submit Button to get prime.
+                // submitButton.setAttribute('disabled', true)
+            }
+
+            // cardTypes = ['mastercard', 'visa', 'jcb', 'amex', 'unionpay','unknown']
+            if (update.cardType === 'visa') {
+                // Handle card type visa.
+            }
+
+            // number 欄位是錯誤的
+            if (update.status.number === 2) {
+                // setNumberFormGroupToError()
+            } else if (update.status.number === 0) {
+                // setNumberFormGroupToSuccess()
+            } else {
+                // setNumberFormGroupToNormal()
+            }
+
+            if (update.status.expiry === 2) {
+                // setNumberFormGroupToError()
+            } else if (update.status.expiry === 0) {
+                // setNumberFormGroupToSuccess()
+            } else {
+                // setNumberFormGroupToNormal()
+            }
+
+            if (update.status.ccv === 2) {
+                // setNumberFormGroupToError()
+            } else if (update.status.ccv === 0) {
+                // setNumberFormGroupToSuccess()
+            } else {
+                // setNumberFormGroupToNormal()
+            }
+        })
+
+
+        //tappay getPrime
+
+            // call TPDirect.card.getPrime when user submit form to get tappay prime
+            // $('form').on('submit', onSubmit)
+
+        function onSubmit(event) {
+            const payHint=document.querySelector("#pay_hint");
+            payHint.innerHTML="";
+
+            //先確認聯絡資料格式
+            let checkResult=checkContactInfo();
+            if (checkResult==1){
+                return;
+            }
+
+            event.preventDefault()
+
+            // 取得 TapPay Fields 的 status
+            const tappayStatus = TPDirect.card.getTappayFieldsStatus()
+
+            // 確認是否可以 getPrime
+            if (tappayStatus.canGetPrime === false) {
+                
+                let nuberStatus = tappayStatus.status.number;
+                let expiryStatus = tappayStatus.status.expiry;
+                let ccvStatus = tappayStatus.status.ccv;
+
+                if(nuberStatus==1||2){
+                    payHint.innerText="未輸入卡片號碼 或欄位有錯誤。"
+                }
+                if(expiryStatus==1||2){
+                    payHint.innerText="未輸入卡片過期時間 或欄位有錯誤。"
+                }
+                if(ccvStatus==1||2){
+                    payHint.innerText="未輸入卡片驗證密碼 或欄位有錯誤。"
+                }
+
+                return
+            }
+
+            // Get prime
+            TPDirect.card.getPrime(async function(result) {
+                //失敗
+                if (result.status !== 0) {
+                    payHint.innerText="get prime error" + result.msg;
+                    return
+                }
+
+                //成功
+                    
+                prime=result.card.prime;
+                    
+                    // send prime to your server, to pay with Pay by Prime API .
+                    // Pay By Prime Docs: https://docs.tappaysdk.com/tutorial/zh/back.html#pay-by-prime-api
+
+                    getTrips(prime);
+
+            })
+        }
+
+            
+
+    </script>
+            
+    <script>
+        let contactName=document.querySelector("#contact_name");
+        let contactEmail=document.querySelector("#contact_email");
+        let contactTel=document.querySelector("#contact_tel");
+        let contactHint=document.querySelector("#contact_hint");
+
+        //booking contact
+        function checkContactInfo(){
+            
+            const telReg=/^09[0-9]{8}$/;
+
+            const emailReg=/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+
+            if((contactName.value=="" || undefined) || (contactEmail.value=="" || undefined) ||(contactTel.value=="" || undefined)){
+                contactHint.innerText="聯絡資訊不完全";
+                return 1;
+            }
+            if (!telReg.test(contactTel.value)) {
+                contactHint.innerText="手機格式錯誤";
+                return 1;
+            }
+            if (!emailReg.test(contactEmail.value)) {
+                contactHint.innerText="email格式錯誤";
+                return 1;
+            }
+            return 0;
+        }
+        
+
+        //order function
+        async function getTrips(prime){
+
+            let trips=[];
+            const payHint=document.querySelector("#pay_hint");
+
+            await fetch("/api/booking", {
+            method: "GET",
+            headers: { "content-type": "application/json"}
+            }).then(function(response){
+                return response.json();
+            }).then(function(data){
+                if(data["data"]=="" || undefined){
+                    ////////目前沒有景點////////////
+                    return;
+                }
+                else{
+                    data=data["data"];
+
+                    let total_price=0;
+
+                    count=Object.keys(data).map(function(_) { return data[_]; }).length;
+                    for(let i=0;i<count;i++){
+                        let attractions = {
+                            "attraction":{
+                                "id": data[i]["attraction"]["id"],
+                                "name": data[i]["attraction"]["name"],
+                                "address": data[i]["attraction"]["address"],
+                                "image": data[i]["attraction"]["image"]               
+                            },
+                            "date": data[i]["date"],
+                            "time": data[i]["time"],
+                            "price": data[i]["price"]
+                        };
+                        total_price+=data[i]["price"];
+                        trips.push(attractions);
+                    }
+
+
+                    /////////////////////////////////////////////////////////
+
+                    fetch("/api/order", {
+                    method: "POST",
+                    body: JSON.stringify({prime: prime,
+                                          order: {
+                                                  price: total_price,
+                                                  trip:trips,
+                                                     contact:{
+                                                        name:contactName.value,
+                                                        email:contactEmail.value,
+                                                        phone:contactTel.value
+                                                     }
+                                           }
+                                      }),
+                    headers: { "content-type": "application/json"}
+                    }).then(function(response){
+                        return response.json();
+                    }).then(function(data){
+                        data=data["data"];
+                        if(data["error"] == true){
+                            payHint.innerHTML=data["message"];
+                        }
+                        else{
+                            window.location.href = "/thankyou?number="+data["number"]
+                        }
+                    });
+                }
+            });
+        }
+
+        
+        
+
+        //user function
+        const toBooking=document.querySelector("#toBooking");
+        const toSign=document.querySelector("#toSign");
+        const signupbox=document.querySelector("#signupbox");
+        const signinbox=document.querySelector("#signinbox");
+        const signboxClose=document.querySelector("#signbox_close");
+        const signinClose=document.querySelector("#signin_close");
+        const signNew=document.querySelector("#signNew");
+        const hintrow=document.querySelector("#hintrow");
+        const hintrow_signin=document.querySelector("#hintrow_signin");
+        const toSignIn=document.querySelector("#toSignIn");
+        const toSignUp=document.querySelector("#toSignUp");
+        const sign_in=document.querySelector("#signIn");
+
+        //booking function
+        const middle=document.querySelector(".middle");
+        const lines=document.querySelectorAll(".line");
+        const bottom=document.querySelector(".bottom");
+        const tail=document.querySelector(".tail");
+        const attraction_info=document.querySelector("#attraction_info");
+        const footer=document.querySelector("footer");
+        const greeting=document.querySelector("#greeting");
+        const greeting_name=document.querySelector("#greeting_name");
+        const contact_name=document.querySelector("#contact_name");
+        const contact_email=document.querySelector("#contact_email");
+        const price=document.querySelector("#price");
+        
+        //
+        
+        document.addEventListener("DOMContentLoaded",()=>{
+            fetch("/api/user/auth", {
+                    method: "GET",
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["data"]!=null){
+                        let mem_Id=data["data"]["id"];
+                        let mem_Name=data["data"]["name"];
+                        let mem_Email=data["data"]["email"];
+                        greeting_name.innerText=mem_Name;
+                        toSign.id="toSignOut";
+                        const toSignOut=document.querySelector("#toSignOut");
+                        toSignOut.innerText="登出系統";
+                        toSignOut.addEventListener("click",()=>{
+                            fetch("/api/user/auth", {
+                                    method: "DELET",
+                                    headers: { "content-type": "application/json"}
+                                }).then(function(response){
+                                    return response.json();
+                                }).then(function(data){
+                                    if(data["ok"]==true){
+                                        location.reload();
+                                    }
+                                });
+                        });
+                        //booking function
+                            fetch("/api/booking", {
+                                method: "GET",
+                                headers: { "content-type": "application/json"}
+                            }).then(function(response){
+                                return response.json();
+                            }).then(function(data){
+                                data=data["data"]
+                                if(data==null){
+                                    greeting.innerHTML+="<br><br><div class='hint'>目前沒有任何待預定的行程。</div>";
+                                    attraction_info.style.display="none";
+                                    middle.style.display="none";
+                                    for(i=0;i<lines.length;i++){
+                                        lines[i].style.display="none";
+                                    }                                    
+                                    bottom.style.display="none";
+                                    tail.style.display="none";
+                                    footer.style.height="calc(100vh - 212px)";
+                                }
+                                else{
+                                    showBookingData(data,mem_Name,mem_Email);
+                                }
+                            });
+                        //
+                    }
+                    else{
+                        toSign.innerText="登入/註冊";
+                        toSign.addEventListener("click",()=>{
+                            signinbox.style.display="grid";
+                        });
+                        window.location.href="/";
+                    }
+                });
+        });
+
+        const webTitle=document.querySelector("#webTitle");
+        webTitle.addEventListener("click",()=>{
+            window.location.href="/";
+        });
+
+        
+        signboxClose.addEventListener("click",()=>{
+            signupbox.style.display="none";
+        });
+        signinClose.addEventListener("click",()=>{
+            signinbox.style.display="none";
+        });
+        toSignIn.addEventListener("click",()=>{
+            signupbox.style.display="none";
+            signinbox.style.display="grid";
+        });
+        toSignUp.addEventListener("click",()=>{
+            signinbox.style.display="none";
+            signupbox.style.display="grid";
+        });
+
+        signNew.addEventListener("click",signUp);
+        sign_in.addEventListener("click",signIn);
+
+
+        function signUp(){
+            signupbox.style.gridTemplateRows="repeat(6,1fr)";
+            hintrow.style.display="none";
+            hintrow.style.color="rgb(159, 0, 0)";
+
+            let username=document.querySelector("#username").value;
+            //姓名格式|中文、英文但不包括底線，可以有空格|
+            let reg_username=username.replace(/\s*/g,"").search("^[\\u4E00-\\u9FA5A-Za-z]+$");
+
+            let email=document.querySelector("#email").value;
+            //email格式
+            let reg_email=email.search("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$");
+            
+            let password=document.querySelector("#password").value;
+            //密碼格式|以字母開頭，只能包含字母、數字和底線|
+            let reg_password=password.search("^[a-zA-Z]\\w");
+            
+            //檢查資料格式
+            if(username=="" || email=="" || password==""){
+                signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                hintrow.innerHTML="×：資料填寫不完全，請重新輸入。"
+                hintrow.style.display="grid";
+            }
+            else if(username.length>30||username.length<2||email.length>320||password.length>18||password.length<6){
+                signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                hintrow.innerHTML="×：資料長度不符，請重新輸入。"
+                hintrow.style.display="grid";
+            }
+            else if((reg_username==-1) || (reg_email==-1) ||(reg_password==-1)){
+                signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                hintrow.innerHTML="×：資料格式錯誤，請重新填寫。"
+                hintrow.style.display="grid";
+            }
+            else{
+                //檢查email是否重複
+                fetch("/api/user", {
+                    method: "POST",
+                    body: JSON.stringify({username: username,
+                                        password: password,
+                                        email: email
+                                        }),
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["ok"]==true){
+                        ///註冊成功
+                        signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                        hintrow.innerHTML="註冊成功。"
+                        hintrow.style.display="grid";
+                        hintrow.style.color="#009393";
+                    }
+                    else{
+                        ///註冊失敗
+                        signupbox.style.gridTemplateRows="repeat(4,1fr) 15px repeat(2,1fr)";
+                        hintrow.innerHTML=data["message"]
+                        hintrow.style.display="grid";
+                    }
+                });
+            }
+        }
+
+
+        function signIn(){
+            signinbox.style.gridTemplateRows="repeat(5,1fr)";
+            hintrow_signin.style.display="none";
+            hintrow_signin.style.color="rgb(159, 0, 0)";
+
+            let email_signin=document.querySelector("#email_signin").value;
+            //email格式
+            let reg_email_signin=email_signin.search("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$");
+            
+            let password_signin=document.querySelector("#password_signin").value;
+            //密碼格式|以字母開頭，只能包含字母、數字和底線|
+            let reg_password_signin=password_signin.search("^[a-zA-Z]\\w");
+            
+            //檢查資料格式
+            if(email_signin=="" || password_signin==""){
+                signinbox.style.gridTemplateRows="repeat(3,1fr) 15px repeat(2,1fr)";
+                hintrow_signin.innerHTML="×：資料填寫不完全，請重新輸入。"
+                hintrow_signin.style.display="grid";
+            }
+            else if((reg_email_signin==-1) ||(reg_password_signin==-1)){
+                signinbox.style.gridTemplateRows="repeat(3,1fr) 15px repeat(2,1fr)";
+                hintrow_signin.innerHTML="×：無效的信箱或密碼，請重新填寫。"
+                hintrow_signin.style.display="grid";
+            }
+            else{
+                //檢查email是否存在、信箱跟密碼是否正確
+                fetch("/api/user/auth", {
+                    method: "PUT",
+                    body: JSON.stringify({email: email_signin,
+                                        password: password_signin,
+                                        }),
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["ok"]==true){
+                        ///登入成功
+                        location.reload();
+                    }
+                    else{
+                        ///註冊失敗
+                        signinbox.style.gridTemplateRows="repeat(3,1fr) 15px repeat(2,1fr)";
+                        hintrow_signin.innerHTML=data["message"]
+                        hintrow_signin.style.display="grid";
+                    }
+                });
+            }
+
+        }
+        //
+
+        //booking function
+        toBooking.addEventListener("click",()=>{
+            fetch("/api/user/auth", {
+                    method: "GET",
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["data"]!=null){
+                        window.location.href="/booking";
+                    }
+                    else{
+                        signinbox.style.display="grid";
+                    }
+                });
+        });
+
+        async function showBookingData(data,mem_Name,mem_Email){
+            let totalPrice=0;
+            data=Object.values(data);
+            for(i=0; i<data.length; i++){
+                data[i]=Object.values(data[i]);
+                attraction_info.style.display="none";   
+                const top=document.querySelector(".top");             
+                let attDiv=document.createElement("div");
+                attDiv.id="attraction_info"+i;
+                attDiv.className="attraction_info";
+                top.appendChild(attDiv);
+                let att_infoi=document.querySelector("#attraction_info"+i);
+                attDiv=document.createElement("div");
+                attDiv.id="attraction_img"+i;
+                attDiv.className="attraction_img";
+                att_infoi.appendChild(attDiv);
+                let attraction_imgi=document.querySelector("#attraction_img"+i);
+                let attImg=document.createElement("img");
+                attImg.className="attraction_img_img";
+                attImg.src=data[i][0]["image"];
+                attraction_imgi.appendChild(attImg);
+                attDiv=document.createElement("div");
+                attDiv.id="attraction_text"+i;
+                attDiv.className="attraction_text";
+                await att_infoi.appendChild(attDiv);
+                let attText=document.querySelector("#attraction_text"+i);
+                attDiv=document.createElement("div");
+                attDiv.id="attraction_title"+i;
+                attDiv.className="attraction_title";
+                await attText.appendChild(attDiv);
+                let attTitle=document.querySelector("#attraction_title"+i);
+                attTitle.innerText="台北一日遊："+data[i][0]["name"];
+                attDiv=document.createElement("div");
+                attDiv.id="attraction_date"+i;
+                attDiv.className="attraction_item";
+                await attText.appendChild(attDiv);
+                let attDate=document.querySelector("#attraction_date"+i);
+                attDate.innerHTML="日期：<span>"+data[i][1]+"</span>";
+                attDiv=document.createElement("div");
+                attDiv.id="attraction_time"+i;
+                attDiv.className="attraction_item";
+                await attText.appendChild(attDiv);
+                let attTime=document.querySelector("#attraction_time"+i);
+                if(data[i][2]=="morning"){
+                    attTime.innerHTML="時間：<span>早上九點到下午四點</span>";
+                }
+                else{
+                    attTime.innerHTML="時間：<span>下午一點到晚上七點</span>";
+                }
+                attDiv=document.createElement("div");
+                attDiv.id="attraction_cost"+i;
+                attDiv.className="attraction_item";
+                await attText.appendChild(attDiv);
+                let attCost=document.querySelector("#attraction_cost"+i);
+                attCost.innerHTML="費用：<span>新台幣"+data[i][3]+"元</span>";
+                attDiv=document.createElement("div");
+                attDiv.id="attraction_address"+i;
+                attDiv.className="attraction_item";
+                await attText.appendChild(attDiv);
+                let attAddress=document.querySelector("#attraction_address"+i);
+                attAddress.innerHTML="地點：<span>"+data[i][0]["address"]+"</span>";
+                attDiv=document.createElement("div");
+                attDiv.id="attraction_delete"+i;
+                attDiv.className="attraction_delete";
+                await att_infoi.appendChild(attDiv);
+                attraction_delete=document.querySelector("#attraction_delete"+i);
+                attImg=document.createElement("img");
+                attImg.className="";
+                attImg.id="deleteBtn"+i;
+                attImg.src="/images/icon_delete.png";
+                await attraction_delete.appendChild(attImg);
+                let deleteBtn=document.querySelector("#deleteBtn"+i);
+                let ID=data[i][0]["id"];
+                let DATE=data[i][1];
+                let TIME=data[i][2];
+                attDiv=document.createElement("div");
+                attDiv.className="line";
+                await top.appendChild(attDiv);
+                totalPrice+=data[i][3];
+                deleteBtn.addEventListener("click",()=>{deleteBooked(ID,DATE,TIME)});
+            }
+            contact_name.value=mem_Name;
+            contact_email.value=mem_Email;
+            price.innerText=totalPrice;
+        }
+
+        let deleteBooked=(attId,date,time)=>{
+            fetch("/api/booking", {
+                    method: "DELETE",
+                    body: JSON.stringify({attraction_id: attId,
+                            date: date,
+                            time: time,
+                            }),
+                    headers: { "content-type": "application/json"}
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    if(data["ok"]==true){
+                        location.reload();
+                    }
+                    else{
+                        let attDiv=document.createElement("div");
+                        attDiv.id="deleteHint";
+                        attDiv.className="delete_hint"
+                        greeting.appendChild(attDiv);
+                        const deleteHint=document.querySelector("#deleteHint");
+                        deleteHint.innerHTML="移除失敗";
+                    }
+                });
+        }
+
+    </script>
+
+</body>
+
+</html>

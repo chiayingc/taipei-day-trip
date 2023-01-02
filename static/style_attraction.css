@@ -59,6 +59,7 @@
         line-height: 32px;
         color: #448899;
         font-weight: bolder;
+        cursor: pointer;
     }
 
     #signinbox{
@@ -337,6 +338,7 @@
         padding-right: 34px;
         padding-top: 10px;
         padding-bottom: 10px;
+        cursor: pointer;
     }
     .option2{
         grid-area: 4/1/5/2;
@@ -393,6 +395,14 @@
         border-radius: 5px;
         border: 0;
         cursor: pointer;
+    }
+
+    .hint_text{
+        grid-area: 6/5/7/7;
+        color: rgb(159, 0, 0);
+        font-size: .6rem;
+        padding-left: 10px;
+        
     }
 
 
