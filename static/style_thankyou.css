@@ -9,13 +9,11 @@
 
 @media (max-width:1920px){
     body{
+        min-height: 100vh;
         width: 100%;
-        background-color: #fff;
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 100%;
         justify-items: center;
-        font-family: 'Noto Sans TC';
-        color: #666666;
     }
 
     body nav{
@@ -27,8 +25,7 @@
         position:fixed;
         top: 0;
         right: 0;
-        z-index: 3;
-        box-shadow: 0px 1px 0px 0px #DBDBDB;
+        z-index: 4;
     }
 
     body nav .nav{
@@ -43,6 +40,8 @@
         grid-template-columns: repeat(2,100px);
         font-size: 14px;
         line-height: 18px;
+        color: #666666;
+        padding: 20px;
         justify-self: end;
         
     }
@@ -132,6 +131,7 @@
         font-weight: 500;
         font-size: 20px;
         line-height: 22px;
+        color: #666666;
         display: flex;
         justify-content: center;
     }
@@ -177,189 +177,18 @@
         line-height: 16px;
         cursor: pointer;
     }
-    /* main */
 
     main{
-        width: 1000px;
+        width: 1200px;
+        margin-top: 50px;
+        margin-bottom: 55px;
         position: relative;
         top: 54px;
-        margin-top: 46px;
-        padding-left: 100px;
-        padding-right: 100px;
     }
-
-    .top{
-        width: 100%;
-    }
-
-    #greeting{
-        width: 100%;
-        margin-bottom: 35px;
-    }
-
-    .second_title{
-        font-weight: 700;
-        font-size: 19px;
-    }
-
-    .attraction_info{
-        width: 100%;
-        height: 200px;
-        display: grid;
-        grid-template-columns: 288px 1fr 30px;
-        grid-template-rows: 1fr;
-        padding-bottom: 40px;
-    }
-    .attraction_delete > img{
-        width: 30px;
-        height: 30px;
-        cursor: pointer;
-    }
-
-    .delete_hint{
-        margin-top: 20px;
-        padding-left: 10px;
-        font-size: 16px;
-        color: rgb(159, 0, 0);
-    }
-
-    .attraction_img{
-        width: 250px;
-        height: 200px;
-        padding-left: 8px;
-        padding-right: 8px;
-        margin-right: 22px;
-    }
-    .attraction_img_img{
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        overflow: hidden;
-    }
-
-    .attraction_text{
-        height: 200px;
-        padding-top: 5px;
-        padding-bottom: 10px;
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: repeat(5,1fr);
-        row-gap: 3px;
-    }
-
-    .attraction_title{
-        margin-bottom: 5px;
-        font-size: 17px;
-        font-weight: 700;
-        color: #448899;
-        height: fit-content;
-    }
-
-    .attraction_item{
-        font-size: 16px;
-        font-weight: 700;
-        color: #757575;
-        height: fit-content;
-    }
-
-    .attraction_item > span{
-        font-weight: 500;
-        height: fit-content;
-    }
-
-    .line{
-        width: 1200px;
-        height: 1px;
-        background-color:  #d8d8d8;
-        margin-bottom: 45px;
-        position: relative;
-        left: -100px;
-    }
-
-    .middle{
-        padding-bottom: 45px;
-    }
-
-    #contact_info, #pay_info{
-        padding-top: 24px;
-        padding-bottom: 20px;
-        display: grid;
-        grid-template-columns: 85px auto;
-        grid-template-rows: 1fr 1fr 1fr;
-        row-gap: 15px;
-        font-size: 16px;
-        font-weight: 500;
-        align-items: center;
-    }
-    #contact_info > input, #card-number,#card-expiration-date,#card-ccv{
-        width: 180px;
-        height: 18px;
-        padding: 10px;
-        outline: none;
-        border: 1px solid #E8E8E8;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: 500;
-        color: #000;
-    }
-    #card-expiration-date{
-        cursor: pointer;
-    }
-
-    .hint{
-        font-size: 16px;
-        font-weight: 700;
-    }
-
-    #contact_hint{
-        color: rgb(159, 0, 0);
-        font-size: 16px;
-        font-weight: 500;
-        margin-top: 10px;
-    }
-
-    #pay_hint{
-        color: rgb(159, 0, 0);
-        font-size: 16px;
-        font-weight: 500;
-    }
-
-    .bottom{
-        padding-bottom: 40px;
-    }
-
-    .tail{
-        padding-bottom: 62px;
-        display: grid;
-        justify-items: right;
-        grid-template-rows: 20px 1fr;
-        row-gap: 25px;
-    }
-
-    .price{
-        font-size: 17px;
-        font-weight: 700;
-    }
-    
-    #order{
-        width: 180px;
-        padding-left: 20px;
-        padding-right: 20px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        font-size: 18px;
-        font-weight: 400;
-        color: #FFFFFF;
-        background-color: #448899;
-        border-radius: 5px;
-        border: 0;
-        cursor: pointer;
-    }
-
-
-    /* main */
 
     footer{
+        position: absolute;
+        bottom: 0;
         margin-top: 55px;
         display: grid;
         align-items: center;
@@ -380,19 +209,8 @@
 
 @media (max-width:1200px){
     
-    body nav .nav,.header{
+    body nav .nav,main{
         width: 90%;
-    }
-
-    main{
-        width: 90%;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
-    .line{
-        width: 100%;
-        left:0px;
     }
 
     body nav .nav ul{
@@ -400,6 +218,7 @@
         padding: 15px;
         grid-template-columns: repeat(2,1fr);
     }
+
 
 }
 
@@ -409,44 +228,13 @@
         
     }
 
+    .header{
+        width: 83%;
+    }
+
     body nav .nav ul{
         column-gap: 8px;
         font-size: 13px;
     }
-
-    #signupbox,#signinbox{
-        width: calc(90%-20px);
-    }
-
-    .top{
-        width: 100%;
-    }
-
-    #greeting{
-        margin-bottom: 7px;
-    }
-
-    .attraction_info{
-        height: auto;
-        grid-template-columns: 100%;
-        grid-template-rows: auto auto auto;
-        padding-bottom: 30px;
-    }
-
-    .attraction_delete{
-        justify-self: end;
-    }
-
-    .attraction_img{
-        width: 100%;
-        padding-left: 0px;
-        padding-right: 0px;
-        padding-top: 30px;
-        padding-bottom: 30px;
-        margin-right: 0px;
-    }
-
-    
-    
 
 }

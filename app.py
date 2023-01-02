@@ -6,9 +6,10 @@ from mysql.connector import pooling
 import json,re,jwt
 from flask_bcrypt import Bcrypt
 import datetime
+import requests
 
 bcrypt=Bcrypt()
-jwtKey="**************"
+jwtKey="***********"
 
 
 connection_pool=pooling.MySQLConnectionPool(pool_name="pynative_pool",
@@ -389,7 +390,7 @@ def apiuserauth_delet():
 	return response
 
 
-#####################################################
+#booking
 
 @app.route("/api/booking",methods=["GET"])
 def apibooking_get():
@@ -425,7 +426,7 @@ def apibooking_get():
 				result["data"]={}
 				for i in range(len(bookedData)):
 					images=json.loads(bookedData[i][3])
-					result["data"][i]={"attaction":{"id":bookedData[i][0],"name":bookedData[i][1],"address":bookedData[i][2],"image":images[0]},"date":bookedData[i][4],"time":bookedData[i][5],"price":bookedData[i][6],"status":bookedData[i][7]}
+					result["data"][i]={"attraction":{"id":bookedData[i][0],"name":bookedData[i][1],"address":bookedData[i][2],"image":images[0]},"date":bookedData[i][4],"time":bookedData[i][5],"price":bookedData[i][6],"status":bookedData[i][7]}
 				return jsonify(result),200
 
 		else:
@@ -578,7 +579,256 @@ def apibooking_delete():
 		print("connection closed.")
 
 
-#####################################################
+#order####################################################
 
+@app.route("/api/order",methods=["POST"])
+def apiorder_post():
+	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+			token_jwt=request.cookies.get("token")
+			if token_jwt == None:
+				result={}
+				result["error"]=True
+				result["message"]="未登入系統，拒絕存取。"
+				return jsonify(result),403
+			else:
+				try:
+					memberData=jwt.decode(token_jwt,jwtKey,algorithms="HS256")
+				except:
+					result={}
+					result["error"]=True
+					result["message"]="未登入系統，拒絕存取。"
+					return jsonify(result),403
+
+				try:	
+					memberId=memberData["id"]
+					order_data=request.json
+
+					current_time=datetime.datetime.now()
+					orderNumber=current_time.strftime("%Y%m%d%H%M%S")+str(memberId)
+					status="N"
+
+					sql="INSERT INTO `orderList` (member_id,order_no,name,email,phone,order_price,order_status) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+					val=(memberId,
+						 orderNumber,
+						 order_data["order"]["contact"]["name"],
+						 order_data["order"]["contact"]["email"],
+						 order_data["order"]["contact"]["phone"],
+						 order_data["order"]["price"],
+						 status)
+					cursor.execute(sql,val)
+					connection_object.commit()
+
+					for x in range(len(order_data["order"]["trip"])):
+						sql="INSERT INTO `orderDetail` (order_no,attraction_id,attraction_name,attraction_address,attraction_image,date,time,price) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+						val=(orderNumber,
+							 order_data["order"]["trip"][x]["attraction"]["id"],
+							 order_data["order"]["trip"][x]["attraction"]["name"],
+							 order_data["order"]["trip"][x]["attraction"]["address"],
+							 order_data["order"]["trip"][x]["attraction"]["image"],
+							 order_data["order"]["trip"][x]["date"],
+							 order_data["order"]["trip"][x]["time"],
+							 order_data["order"]["trip"][x]["price"],
+							 )
+						cursor.execute(sql,val)
+						connection_object.commit()
+					
+				except:
+					result={}
+					result["error"]=True
+					result["message"]="訂單建立失敗，輸入不正確或其他原因。"
+					return jsonify(result),400
+				
+				##付款
+				# // *** 格式 ***
+				# // 測試環境 URL: https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime
+				# // 正式環境 URL: https://prod.tappaysdk.com/tpc/payment/pay-by-prime
+				# // Header:
+				# //   Content-Type: application/json
+				# //   x-api-key: YourPartnerKey
+
+				tappay_url="https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"
+				tappay_request_header = {
+								"content-type":"application/json",
+								"x-api-key":"***********"
+							  	}
+
+				tappay_request_body = {
+					"prime": order_data["prime"],
+					"partner_key": "*************",
+					"merchant_id": "chiayingc_ESUN",
+					"details":"TapPay Test",
+					"amount": order_data["order"]["price"],
+					"cardholder": {
+						"phone_number": order_data["order"]["contact"]["phone"],
+						"name": order_data["order"]["contact"]["name"],
+						"email": order_data["order"]["contact"]["email"]
+						}
+				}
+
+				response = requests.post(tappay_url, headers = tappay_request_header, json = tappay_request_body)
+				data = response.json()
+
+				#付款失敗
+				if data["status"]!=0:
+					sql="UPDATE `orderList` SET order_status = %s WHERE order_no = %s"
+					val=("F",orderNumber)
+					cursor.execute(sql,val)
+					connection_object.commit()
+
+					result={}
+					result["error"]=True
+					result["message"]="付款失敗。"
+					return jsonify(result),400
+				
+				else:
+					#付款成功
+					sql="UPDATE orderList SET order_status= %s WHERE order_no= %s"
+					val=("S",orderNumber)
+					cursor.execute(sql,val)
+					connection_object.commit()
+					sql="DELETE FROM `booking` WHERE member_id = %s"
+					cursor.execute(sql,(memberId,))
+					connection_object.commit()
+
+					result={}
+					result["data"]={}
+					result["data"]["number"]=orderNumber
+					result["data"]["payment"]={}
+					result["data"]["payment"]["status"]=0
+					result["data"]["payment"]["message"]="付款成功"
+					return jsonify(result),200
+				
+
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
+	
+	except:
+		result={}
+		result["error"]=True
+		result["message"]="伺服器內部錯誤"
+		return jsonify(result),500
+	
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
+
+
+@app.route("/api/order/<ordernumber>",methods=["GET"])
+def apiorder_get(ordernumber):
+	try:
+		connection_object=connection_pool.get_connection()
+
+		if connection_object.is_connected():
+			db_Info=connection_object.get_server_info()
+			print("Connected to MySQL database using connection pool... MySQ Server version on",db_Info)
+
+			cursor=connection_object.cursor()
+			cursor.execute("select database();")
+			record=cursor.fetchone()
+			print("Your connected to-",record)
+			token_jwt=request.cookies.get("token")
+			if token_jwt == None:
+				result={}
+				result["error"]=True
+				result["message"]="未登入系統，拒絕存取。"
+				return jsonify(result),403
+			else:
+				try:
+					memberData=jwt.decode(token_jwt,jwtKey,algorithms="HS256")
+				except:
+					result={}
+					result["error"]=True
+					result["message"]="未登入系統，拒絕存取。"
+					return jsonify(result),403
+
+				try:	
+					sql="SELECT name,email,phone,order_price,order_status FROM `orderList` WHERE order_no=%s"
+					val=(ordernumber,)
+					cursor.execute(sql,val)
+					data_list=cursor.fetchall()
+					if data_list==[]:
+						result={}
+						result["data"]=None
+						return jsonify(result)
+
+					name=data_list[0][0]
+					email=data_list[0][1]
+					phone=data_list[0][2]
+					price=data_list[0][3]
+					status=data_list[0][4]
+					if status!="S":
+						result_status=1
+					else:
+						result_status=0
+						
+					sql="SELECT attraction_id,attraction_name,attraction_address,attraction_image,date,time,price FROM `orderDetail` WHERE order_no=%s"
+					val=(ordernumber,)
+					cursor.execute(sql,val)
+					data_deatil=cursor.fetchall()
+					trips=[]
+					for x in range(len(data_deatil)):
+						trip = {
+							"attraction":{
+								"id": data_deatil[x][0],
+								"name": data_deatil[x][1],
+								"address": data_deatil[x][2],
+								"image": data_deatil[x][3]
+							},
+							"date": data_deatil[x][4],
+							"time": data_deatil[x][5],
+							"price": data_deatil[x][6]
+						}
+						trips.append(trip)
+					
+					result={}
+					result["data"]={}
+					result["data"]["number"]=ordernumber
+					result["data"]["price"]=price
+					result["data"]["trip"]=trips
+					result["data"]["contact"]={}
+					result["data"]["contact"]["name"]=name
+					result["data"]["contact"]["email"]=email
+					result["data"]["contact"]["phone"]=phone
+					return jsonify(result),200
+					
+				except:
+					print("Error while connecting to MySQL using Connection pool",Error)
+					result={}
+					result["error"]=True
+					result["message"]="伺服器內部錯誤"
+					return jsonify(result),500
+				
+		else:
+			print("Error while connecting to MySQL using Connection pool",Error)
+			result={}
+			result["error"]=True
+			result["message"]="伺服器內部錯誤"
+			return jsonify(result),500
+	
+	except:
+		result={}
+		result["error"]=True
+		result["message"]="伺服器內部錯誤"
+		return jsonify(result),500
+	
+	finally:
+		cursor.close()
+		connection_object.close()
+		print("connection closed.")
 
 app.run(host="0.0.0.0",port=3000)
