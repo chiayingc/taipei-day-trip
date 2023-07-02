@@ -6,15 +6,15 @@
 #### LIVE DEMO :  [click here  🔸](http://52.68.197.98:3000/) 
 
 ### ⚬   Member Authentication System using native JavaScript and JWT Verification
-(/static/images/member-system.gif "Member Authentication System.")
+![This is an alt textdsfsd.](/static/images/member-system.gif "Member Authentication System.")
 ### ⚬   Infinite scroll
-(/static/images/infinite-scroll.gif "Infinite scroll.")
+![This is an alt textdsfsd.](/static/images/infinite-scroll.gif "Infinite scroll.")
 ### ⚬  Infinite Carousel
-(/static/images/carousel.gif ”Infinite Carousel.")
+![This is an alt textdsfsd.](/static/images/carousel.gif ”Infinite Carousel.")
 ### ⚬  Database normalization
-(/static/images/db.jpeg "Database normalization.")
+![This is an alt textdsfsd.](/static/images/db.jpeg "Database normalization.")
 ### ⚬  Third Party (TapPay) Payment System
-(/static/images/third-party-payment.gif "Third-party (TapPay) Payment System.")
+![This is an alt textdsfsd.](/static/images/third-party-payment.gif "Third-party (TapPay) Payment System.")
 
 
 ## ✨ Built With
